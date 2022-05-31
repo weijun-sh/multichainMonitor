@@ -4,20 +4,13 @@ const axios = require("axios");
 const fs = require("fs");
 
 const staticPath = path.join(__dirname,'static');
+let html = '<!doctype html><html lang="en"><head><meta charset="utf-8"/><link rel="shortcut icon" href="./favicon.ico"/><meta name="viewport" content="width=device-width,initial-scale=1,shrink-to-fit=no"/><meta name="theme-color" content="#000000"/><script>const GLOBAL_CONSOLES_LINK="",GLOBAL_AGENT_MODE="false"</script><link rel="manifest" href="./manifest.json" crossorigin="use-credentials"/><title>Prometheus Time Series Collection and Processing Server</title><script defer="defer" src="./static/js/main.b0a7c7cf.js"></script><link href="./static/css/main.faad45b4.css" rel="stylesheet"></head><body class="bootstrap"><noscript>You need to enable JavaScript to run this app.</noscript><div id="root"></div></body></html>';
 
 let proxy = {
     app: null,
     init: function (app){
         this.app = app;
         app.use(express.static(staticPath));
-        app.get('/webview/9090', function (req, res){
-            axios.get(`http://localhost:9090`).then((result) => {
-                console.log("home page ==>")
-                res.send(result.data)
-            }).catch(() => {
-                res.send("error")
-            })
-        })
 
         app.get('/webview/*', function (req, res){
             let {originalUrl} = req;
