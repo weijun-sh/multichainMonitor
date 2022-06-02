@@ -2,22 +2,27 @@ const fs = require('fs')
 const path = require('path')
 let buildPath = '/opt/grafana/grafana/public/build/';
 
+
+const decomment = require('decomment');
+
+
 function removeJsComments(code)
 {
-    return code.replaceAll(/(?:^|\n|\r)\s*\/\*[\s\S]*?\*\/\s*(?:\r|\n|$)/g, '\n').
-    replaceAll(/(?:^|\n|\r)\s*\/\/.*(?:\r|\n|$)/g, '\n').
-    replaceAll(/\s+/g, '');
+
+    code = decomment(code)
+    code = code.replace(/\s/g, '');
+    return code
 }
 
 fs.readdir(buildPath, function (err, files){
     files.map((filename, index) => {
-        let fileDir = path.join(buildPath, filename);
-        let stat = fs.statSync(fileDir);
+        let filedir = path.join(buildPath, filename);
+        let stat = fs.statSync(filedir);
 
         if(stat.isFile()){
-            let content = fs.readFileSync(fileDir).toString();
+            let content = fs.readFileSync(filedir).toString();
             content = removeJsComments(content);
-            fs.writeFileSync(fileDir, content)
+            fs.writeFileSync(filedir, content)
         }
     })
 })
