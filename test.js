@@ -3,7 +3,7 @@ var path = require('path');
 var app = express();
 var axios = require('axios');
 var bodyParser = require('body-parser')
-app.use(express.static(path.join(__dirname, 'dist')));
+app.use(express.static(path.join(__dirname, 'test')));
 let proxyPrometheus = require('./proxy-prometheus')
 const viewsPath = path.join(__dirname, 'views');
 app.set('views', viewsPath);
@@ -20,4 +20,4 @@ const getAccess = () => {
 
 proxyPrometheus.init(app).proxy()
 
-app.listen(20520, function () {});
+app.listen(20500, function () {});
