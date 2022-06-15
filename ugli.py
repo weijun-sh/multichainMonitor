@@ -2,7 +2,7 @@ import os
 import sys
 def uglifyjsFile (file):
     try :
-        uglifyjsCmd = 'node_modules/.bin/uglifyjs ' + file + ' -m -o ' + file
+        uglifyjsCmd = 'node_modules/.bin/uglifyjs ' + file + ' -c -m -o ' + file
         if os.system(uglifyjsCmd) != 0:
             print('uglifyjs fail!')
         else:
