@@ -104,3 +104,5 @@ nohup.out
 
 # TernJS port file
 .tern-port
+
+staticConfig.js
