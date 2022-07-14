@@ -4,7 +4,7 @@ var app = express();
 var axios = require('axios');
 let nodemailer = require("nodemailer");
 var bodyParser = require('body-parser')
-var {EmailConfig} = require('./staticConfig')
+var {EmailConfig, EmailReceiverList} = require('./staticConfig')
 app.use(express.static(path.join(__dirname, 'dist')));
 
 const viewsPath = path.join(__dirname, 'views');
@@ -65,6 +65,14 @@ app.post('/send/email', function (req, res) {
                 msg: '发送成功'
             })
         }
+    })
+});
+
+app.get("/email/receivers", function (req, res){
+    res.send({
+        code: 0,
+        data: EmailReceiverList,
+        msg: 'success'
     })
 })
 
