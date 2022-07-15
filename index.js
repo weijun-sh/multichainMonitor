@@ -12,9 +12,9 @@ app.set('views', viewsPath);
 app.set('view engine', 'ejs');
 
 // 解析 application/json
-app.use(bodyParser.json());
+app.use(bodyParser.json({limit:'50mb'}));
 // 解析 application/x-www-form-urlencoded
-app.use(bodyParser.urlencoded({extended: false}));
+app.use(bodyParser.urlencoded({extended: false, limit:'50mb'}));
 
 app.all("*", function (req, res, next) {
     // 设置允许跨域的域名,*代表允许任意域名跨域
@@ -48,7 +48,6 @@ app.post('/send/email', function (req, res) {
     options.html = html;
     options.cc = cc;
     options.from = EmailConfig.from;
-
     transporter.sendMail(options, (err, info) => {
         if (err) {
             console.log("发送失败", err);
