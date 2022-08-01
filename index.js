@@ -70,9 +70,12 @@ app.post('/send/email', function (req, res) {
 
 app.post('/add/todolist', function (req, res) {
 
-    let time = new Date().getTime();
-    let filePath = path.join(__dirname, "filelist", String(time))
-    fs.writeFile(filePath, JSON.stringify(req.body), function (err) {
+    let time = new Date().getTime() + "";
+    let filePath = path.join(__dirname, "loglist", String(time));
+    let content = req.body;
+    content.id = time;
+
+    fs.writeFile(filePath, JSON.stringify(content), function (err) {
         if (err) {
             res.send({
                 code: 1,
@@ -91,16 +94,15 @@ app.post('/add/todolist', function (req, res) {
 });
 
 app.get('/get/todolist', function (req, res) {
-    let dirPath = path.join(__dirname, "filelist");
+    let dirPath = path.join(__dirname, "loglist");
 
 
     let dirs = fs.readdirSync(dirPath)
     let list = dirs.map((filename, index) => {
-        let filePath = path.join(__dirname, "filelist", filename);
+        let filePath = path.join(__dirname, "loglist", filename);
 
         let content = fs.readFileSync(filePath)
         content = JSON.parse(content.toString())
-        content.id = filename;
 
         return content;
     })
@@ -115,23 +117,27 @@ app.get('/get/todolist', function (req, res) {
 app.post('/delete/todolist', function (req, res) {
     let id = req.body.id;
     console.log("id ==>", req.body)
-    let filePath = path.join(__dirname, "filelist", id);
-    fs.unlink(filePath, function (err){
-        if(err){
+    let filePath = path.join(__dirname, "loglist", id+"");
+
+    let content = fs.readFileSync(filePath)
+    content = JSON.parse(content.toString())
+    content.isDeleted = true;
+
+    fs.writeFile(filePath, JSON.stringify(content), function (err) {
+        if (err) {
             res.send({
                 code: 1,
                 data: err,
-                msg: '删除失败'
+                msg: 'err'
             })
-            return
+            return;
         }
         res.send({
             code: 0,
             data: null,
             msg: 'success'
         })
-    });
-
+    })
 
 });
 
