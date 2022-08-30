@@ -8,19 +8,19 @@
     <table border="1">
         <thead>
             <tr>
-                <td>header 1</td>
-                <td>header 2</td>
+                {{each columnItem=columns}}
+                    <td>{{columnItem.title}} 111</td>
+                {{/each}}
             </tr>
         </thead>
         <tbody>
+            {{each item=list}}
             <tr>
-                <td>body 1 1</td>
-                <td>body 1 2</td>
+                {{each columnItem=columns}}
+                    <td>{{columnItem.title}} 222</td>
+                {{/each}}
             </tr>
-            <tr>
-                <td>body 2 1</td>
-                <td>body 2 2</td>
-            </tr>
+            {{/each}}
         </tbody>
     </table>
 </body>

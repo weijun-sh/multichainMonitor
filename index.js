@@ -1,14 +1,11 @@
 var express = require('express');
 var path = require('path');
-var fs = require('fs');
 var app = express();
-var axios = require('axios');
-let nodemailer = require("nodemailer");
 var bodyParser = require('body-parser')
-const {getUnList} = require('./monitor/index')
-var {EmailConfig, EmailReceiverList} = require('./staticConfig')
 app.use(express.static(path.join(__dirname, 'dist')));
 let todoModule = require('./routers/todo')
+const {renderView} = require("./utils/viewEngin");
+const {analysis} = require("./monitor");
 const viewsPath = path.join(__dirname, 'views');
 app.set('views', viewsPath);
 app.set('view engine', 'ejs');
@@ -29,6 +26,29 @@ app.all("*", function (req, res, next) {
         res.send(200); // 让options 尝试请求快速结束
     else
         next();
+})
+
+app.get('/view', function (req, res){
+    let filePath = path.join(__dirname, './views/arrivalTimeout.html');
+
+    analysis().then(list => {
+        renderView(filePath, {
+            list,
+            columns: [{
+                title: "#",
+                dataIndex: "rowKey",
+                key: "rowKey",
+                csvWidth: 4,
+            }, {
+                title: '桥或路由',
+                dataIndex: 'bridge',
+                key: 'bridge',
+            }]
+        }).then((html) => {
+            res.send(html)
+        })
+    })
+
 })
 
 app.use('/todo', todoModule)

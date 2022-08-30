@@ -12,28 +12,31 @@ const {filterRangeList, sendTimeoutEmail} = require("./utils");
 
 async function analysis() {
 
-    sendTimeoutEmail()
-    return;
-    getAllList({
-        inReq: getSwapinHistory,
-        outReq: getSwapoutHistory,
-        routerReq: getSwapHistory,
-        page: "un"
-    }).then((list) => {
+    return new Promise((resolve, reject) => {
+        getAllList({
+            inReq: getSwapinHistory,
+            outReq: getSwapoutHistory,
+            routerReq: getSwapHistory,
+            page: "un"
+        }).then((list) => {
 
-        list = filterRangeList(list)
-        sendTimeoutEmail()
+            list = filterRangeList(list)
 
-    }).catch((err) => {
-        console.log("un monitor error ==>", err.message)
-    });
+            resolve(list)
+
+        }).catch((err) => {
+            console.log("un monitor error ==>", err.message)
+            reject(err)
+        });
+    })
+
 }
 
 
 
 function startMonitor(){
-    analysis().then(() => {
-
+    analysis().then((list) => {
+        sendTimeoutEmail(list)
     }).catch(() => {
 
     })
@@ -42,5 +45,6 @@ function startMonitor(){
 startMonitor();
 
 module.exports = {
-    startMonitor
+    startMonitor,
+    analysis
 }

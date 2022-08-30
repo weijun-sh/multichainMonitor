@@ -2,6 +2,7 @@ const {transferMilSecond, timestamp2DateTime} = require("../utils/time");
 const {emailTransporter} = require("../utils/email");
 const {EmailConfig} = require("../staticConfig");
 const {renderView} = require("../utils/viewEngin");
+const path = require("path");
 
 function deepMapList(data) {
     let list = [];
@@ -63,7 +64,7 @@ function filterRangeList(list){
     list = list.filter(item => {
         const outInfo = isArrivalTimeout(item);
         const {diff, diffText, isOut} = outInfo;
-        console.log("outInfo ==>", outInfo)
+        //console.log("outInfo ==>", outInfo)
         return isOut
     })
 
@@ -72,9 +73,23 @@ function filterRangeList(list){
 
 
 
-function sendTimeoutEmail(){
+function sendTimeoutEmail(list){
+    let filePath = path.join(__dirname, '../views/arrivalTimeout.html');
 
-    renderView().then((html) => {
+    renderView(filePath, {
+        list,
+        columns: [{
+            title: "#",
+            dataIndex: "rowKey",
+            key: "rowKey",
+            csvWidth: 4,
+        }, {
+            title: '桥或路由',
+            dataIndex: 'bridge',
+            key: 'bridge',
+        }]
+    }).then((html) => {
+
         let mailOptions = {
             from: EmailConfig.from,
             to: '13026610069@163.com',

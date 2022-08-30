@@ -2,18 +2,16 @@ const path = require("path")
 const fs = require('fs');
 const art = require('art-template');
 
-function renderView(){
+function renderView(templatePath, datasource){
     return new Promise((resolve, reject) => {
-        let filePath = path.join(__dirname, '../views/arrivalTimeout.html')
-        fs.readFile(filePath, (err, data) => {
+
+        fs.readFile(templatePath, (err, data) => {
             if(err){
                 console.log("read error ==>", err)
                 reject(err)
                 return;
             }
-            let html = art.render(data.toString(), {
-
-            })
+            let html = art.render(data.toString(), datasource)
             resolve(html)
         })
     })
