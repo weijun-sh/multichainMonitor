@@ -1,69 +1,42 @@
 const {
     getSwapoutHistory,
     getSwapHistory,
-    getSwapinHistory
+    getSwapinHistory,
+    getInReview,
+    getOutReview,
+    getReview
 } = require('../service/api');
+const {getAllList} = require('./request')
 
-const {
-    unInRes,
-    unOutRes,
-    unRouterRes
-} = require('./mock')
 
-const {deepMapList} = require('./utils')
-async function getUnList() {
-    console.log("start ==>")
-    let outRes = await getSwapoutHistory({params: {bridge: "all"}, sendOption: {mock: {data: unOutRes}}});
-    let inRes = await getSwapinHistory({params: {bridge: "all"}, sendOption: {mock: {data: unInRes}}});
-    let routerRes = await getSwapHistory({params: {bridge: "all"}, sendOption: {mock: {data: unRouterRes}}});
+async function analysis() {
 
-    console.log("in ==>", inRes);
-    console.log("out ==>", outRes);
-    console.log("router ==>", routerRes);
-
-    if(!inRes ){
-        return Promise.reject(new Error("in 网络错误"))
-    }
-    if(!outRes ){
-        return Promise.reject(new Error("out 网络错误"))
-    }
-    if(!routerRes ){
-        return Promise.reject(new Error("router 网络错误"))
-    }
-
-    if(inRes.result.code !== 0 ){
-        return Promise.reject(new Error("in 发生错误"))
-    }
-    if(outRes.result.code !== 0){
-        return Promise.reject(new Error("out 发生错误"))
-    }
-    if(routerRes.result.code !== 0){
-        return Promise.reject(new Error("router 发生错误"))
-    }
-    let inList = deepMapList(inRes.result.data);
-    let outList = deepMapList(outRes.result.data);
-    let routerList = deepMapList(routerRes.result.data);
-    let list = [...inList, ...outList, ...routerList]
-
-    return Promise.resolve(list);
-}
-
-async function startMonitor() {
-    getUnList().then((list) => {
-        console.log("monitor list ==>", list);
+    getAllList({
+        inReq: getSwapinHistory,
+        outReq: getSwapoutHistory,
+        routerReq: getSwapHistory,
+        page: "un"
+    }).then((list) => {
+        console.log("un monitor list ==>", list[0]);
         list.map(item => {
             //console.log("item ==>", item)
         })
     }).catch((err) => {
-        console.log("monitor error ==>", err.message)
+        console.log("un monitor error ==>", err.message)
     });
 }
 
-startMonitor().then(() => {
 
-}).catch(() => {
 
-})
+function startMonitor(){
+    analysis().then(() => {
+
+    }).catch(() => {
+
+    })
+}
+
+startMonitor();
 
 module.exports = {
     getUnList
