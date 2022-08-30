@@ -7,6 +7,7 @@ const {
     getReview
 } = require('../service/api');
 const {getAllList} = require('./request')
+const {isTimeout, filterRangeList} = require("./utils");
 
 
 async function analysis() {
@@ -17,10 +18,9 @@ async function analysis() {
         routerReq: getSwapHistory,
         page: "un"
     }).then((list) => {
-        console.log("un monitor list ==>", list[0]);
-        list.map(item => {
-            //console.log("item ==>", item)
-        })
+
+        list = filterRangeList(list)
+
     }).catch((err) => {
         console.log("un monitor error ==>", err.message)
     });
@@ -39,5 +39,5 @@ function startMonitor(){
 startMonitor();
 
 module.exports = {
-    getUnList
+    startMonitor
 }

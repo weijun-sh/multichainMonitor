@@ -1,3 +1,5 @@
+const {transferMilSecond, timestamp2DateTime} = require("../utils/time");
+
 function deepMapList(data) {
     let list = [];
     let bridgeAndRouter = {};
@@ -27,6 +29,46 @@ function deepMapList(data) {
     return list;
 }
 
+
+
+//timeout   is 13  mil seconds
+//inittime  is 13  mil seconds
+//timestamp is 10      seconds  * 1000
+function isTimeout(record, timeout = 1000 * 60 * 10){
+    let {inittime, timestamp} = record;
+
+    timestamp = timestamp * 1000;
+    let diff = timestamp - inittime;
+
+    //diffText  110days 20h 10m 4s
+    let diffText = transferMilSecond(diff);
+
+    let isOut = diff > timeout;
+    let inittimeText = timestamp2DateTime(inittime);
+    let timestampText = timestamp2DateTime(timestamp);
+
+    return {
+        diffText,
+        diff,
+        isOut: isOut,
+        inittimeText: inittimeText,
+        timestampText: timestampText
+    }
+}
+
+function filterRangeList(list){
+    list = list.filter(item => {
+        const outInfo = isTimeout(item);
+        const {diff, diffText, isOut} = outInfo;
+        console.log("outInfo ==>", outInfo)
+        return isOut
+    })
+
+    return list;
+}
+
 module.exports = {
-    deepMapList
+    deepMapList,
+    isTimeout,
+    filterRangeList
 }
