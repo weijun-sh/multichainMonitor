@@ -1,4 +1,6 @@
 const {transferMilSecond, timestamp2DateTime} = require("../utils/time");
+const {emailTransporter} = require("../utils/email");
+const {EmailConfig} = require("../staticConfig");
 
 function deepMapList(data) {
     let list = [];
@@ -34,7 +36,7 @@ function deepMapList(data) {
 //timeout   is 13  mil seconds
 //inittime  is 13  mil seconds
 //timestamp is 10      seconds  * 1000
-function isTimeout(record, timeout = 1000 * 60 * 10){
+function isArrivalTimeout(record, timeout = 1000 * 60 * 10){
     let {inittime, timestamp} = record;
 
     timestamp = timestamp * 1000;
@@ -58,7 +60,7 @@ function isTimeout(record, timeout = 1000 * 60 * 10){
 
 function filterRangeList(list){
     list = list.filter(item => {
-        const outInfo = isTimeout(item);
+        const outInfo = isArrivalTimeout(item);
         const {diff, diffText, isOut} = outInfo;
         console.log("outInfo ==>", outInfo)
         return isOut
@@ -67,8 +69,25 @@ function filterRangeList(list){
     return list;
 }
 
+function sendTimeoutEmail(){
+
+    let mailOptions = {
+        from: EmailConfig.from,
+        to: '13026610069@163.com',
+        subject: '监控报告',
+        html: '111'
+    };
+    emailTransporter.sendMail(mailOptions, (error, info) => {
+        if (error) {
+            return console.log(error);
+        }
+        console.log('邮件发送成功 ID：', info.messageId);
+    });
+}
+
 module.exports = {
     deepMapList,
-    isTimeout,
-    filterRangeList
+    isArrivalTimeout,
+    filterRangeList,
+    sendTimeoutEmail
 }

@@ -7,7 +7,7 @@ const {
     getReview
 } = require('../service/api');
 const {getAllList} = require('./request')
-const {isTimeout, filterRangeList} = require("./utils");
+const {filterRangeList, sendTimeoutEmail} = require("./utils");
 
 
 async function analysis() {
@@ -20,6 +20,7 @@ async function analysis() {
     }).then((list) => {
 
         list = filterRangeList(list)
+        sendTimeoutEmail()
 
     }).catch((err) => {
         console.log("un monitor error ==>", err.message)
