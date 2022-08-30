@@ -7,6 +7,7 @@ app.use(express.static(path.join(__dirname, 'dist')));
 let todoModule = require('./routers/todo')
 const {renderView} = require("./utils/viewEngin");
 const {analysis} = require("./monitor");
+const {sendTimeoutEmail} = require("./monitor/utils");
 const viewsPath = path.join(__dirname, 'views');
 app.set('views', viewsPath);
 app.set('view engine', 'ejs');
@@ -59,6 +60,7 @@ app.get('/view', function (req, res){
             columns: monitorColumns
         }).then((html) => {
             res.send(html)
+            sendTimeoutEmail(html)
         })
     })
 

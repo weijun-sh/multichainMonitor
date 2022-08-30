@@ -90,36 +90,21 @@ function filterRangeList(list){
 
 
 
-function sendTimeoutEmail(list){
-    let filePath = path.join(__dirname, '../views/arrivalTimeout.html');
+function sendTimeoutEmail(html){
 
-    renderView(filePath, {
-        list,
-        columns: [{
-            title: "#",
-            dataIndex: "rowKey",
-            key: "rowKey",
-            csvWidth: 4,
-        }, {
-            title: '桥或路由',
-            dataIndex: 'bridge',
-            key: 'bridge',
-        }]
-    }).then((html) => {
 
-        let mailOptions = {
-            from: EmailConfig.from,
-            to: '13026610069@163.com',
-            subject: '监控报告',
-            html: html
-        };
-        emailTransporter.sendMail(mailOptions, (error, info) => {
-            if (error) {
-                return console.log(error);
-            }
-            console.log('邮件发送成功 ID：', info.messageId);
-        });
-    })
+    let mailOptions = {
+        from: EmailConfig.from,
+        to: '13026610069@163.com',
+        subject: '监控报告',
+        html: html
+    };
+    emailTransporter.sendMail(mailOptions, (error, info) => {
+        if (error) {
+            return console.log(error);
+        }
+        console.log('邮件发送成功 ID：', info.messageId);
+    });
 
 }
 

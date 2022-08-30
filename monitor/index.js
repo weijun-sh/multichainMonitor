@@ -36,7 +36,7 @@ async function analysis() {
 
 function startMonitor(){
     analysis().then((list) => {
-        sendTimeoutEmail(list)
+        //sendTimeoutEmail(list)
     }).catch(() => {
 
     })
