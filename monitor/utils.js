@@ -33,7 +33,17 @@ function deepMapList(data) {
     return list;
 }
 
+//inittime  is 13  mil seconds
+function timeFromNow(inittime) {
+    let current = new Date().getTime();
+    let gap = ((current - inittime) / 1000).toFixed(0);
 
+    let fromNow = transferMilSecond(gap);
+
+    return {
+        fromNow: fromNow,
+    }
+}
 
 //timeout   is 13  mil seconds
 //inittime  is 13  mil seconds
@@ -51,12 +61,15 @@ function isArrivalTimeout(record, timeout = 1000 * 60 * 10){
     let inittimeText = timestamp2DateTime(inittime);
     let timestampText = timestamp2DateTime(timestamp);
 
+    let { fromNow:initFromNowText } = timeFromNow(inittime)
+
     return {
         diffText,
         diff,
         isOut: isOut,
         inittimeText: inittimeText,
-        timestampText: timestampText
+        timestampText: timestampText,
+        initFromNowText:initFromNowText
     }
 }
 
