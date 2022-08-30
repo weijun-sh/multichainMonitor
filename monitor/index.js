@@ -19,9 +19,9 @@ async function analysis() {
             routerReq: getSwapHistory,
             page: "un"
         }).then((list) => {
-
+            console.log("org list ==>", list.length)
             list = filterRangeList(list)
-
+            console.log("filtered list ==>", list.length)
             resolve(list)
 
         }).catch((err) => {

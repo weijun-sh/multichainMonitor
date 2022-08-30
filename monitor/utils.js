@@ -64,7 +64,7 @@ function filterRangeList(list){
     list = list.filter(item => {
         const outInfo = isArrivalTimeout(item);
         const {diff, diffText, isOut} = outInfo;
-        //console.log("outInfo ==>", outInfo)
+        console.log("outInfo ==>", outInfo)
         return isOut
     })
 

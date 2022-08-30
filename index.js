@@ -6,6 +6,7 @@ app.use(express.static(path.join(__dirname, 'dist')));
 let todoModule = require('./routers/todo')
 const {renderView} = require("./utils/viewEngin");
 const {analysis} = require("./monitor");
+const {monitorColumns} = require("./monitor/monitorColumns");
 const viewsPath = path.join(__dirname, 'views');
 app.set('views', viewsPath);
 app.set('view engine', 'ejs');
@@ -31,59 +32,27 @@ app.all("*", function (req, res, next) {
 app.get('/view', function (req, res){
     let filePath = path.join(__dirname, './views/arrivalTimeout.html');
 
-    let columns = [{
-        title: "#",
-        dataIndex: "rowKey",
-        key: "rowKey",
-        csvWidth: 4,
-        render: (text, record) => {
-            return record.rowKey
-        }
-    }, {
-        title: '桥或路由',
-        dataIndex: 'bridge',
-        key: 'bridge',
-        render: (text, record) => {
-            return record.bridge
-        }
-    }, {
-        title: '更新时间',
-        dataIndex: 'timestamp',
-        key: 'timestamp',
-        render: (text, record) => {
-            return record.timestamp
-        }
-    }, {
-        title: "注册时间",
-        dataIndex: 'inittime',
-        key: 'inittime',
-        render: (text, record) => {
-            return record.inittime
-        }
-    }];
-
-
-
     analysis().then(list => {
         list = list.map((item, index) => {
             item.rowKey = index + 1;
             return item
         });
         list = list.map(record => {
-            columns.forEach(cItem => {
-                let text = cItem.render(null, record);
+            monitorColumns.forEach(cItem => {
+                let value = record[cItem.dataIndex];
+                let text = cItem.render(value, record);
                 record[cItem.dataIndex] = {
-                    data: record[cItem.dataIndex],
+                    data: value,
                     text: text
                 }
             })
             return record;
         });
-        console.log("list ==>", list)
+        console.log("list ==>", list.length)
 
         renderView(filePath, {
             list,
-            columns: columns
+            columns: monitorColumns
         }).then((html) => {
             res.send(html)
         })
