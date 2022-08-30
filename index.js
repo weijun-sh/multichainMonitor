@@ -37,7 +37,11 @@ app.get('/view', function (req, res){
             item.rowKey = index + 1;
             return item
         });
-        list = list.map(record => {
+        let showList = [];
+        showList = list.map(item => {
+            let record = {
+                ...item
+            }
             monitorColumns.forEach(cItem => {
                 let value = record[cItem.dataIndex];
                 let text = cItem.render(value, record);
@@ -46,12 +50,12 @@ app.get('/view', function (req, res){
                     text: text
                 }
             })
+            showList.push(record)
             return record;
         });
-        console.log("list ==>", list.length)
 
         renderView(filePath, {
-            list,
+            list: showList,
             columns: monitorColumns
         }).then((html) => {
             res.send(html)

@@ -18,14 +18,14 @@ let monitorColumns = [{
     dataIndex: 'timestamp',
     key: 'timestamp',
     render: (text, record) => {
-        return record.timestamp
+        return `${record.timestampText}<br/>${record.timestamp}`
     }
 }, {
     title: "注册时间",
     dataIndex: 'inittime',
     key: 'inittime',
     render: (text, record) => {
-        return record.inittime
+        return record.inittimeText
     }
 }];
 

@@ -61,12 +61,16 @@ function isArrivalTimeout(record, timeout = 1000 * 60 * 10){
 }
 
 function filterRangeList(list){
-    list = list.filter(item => {
+    list = list.map(item => {
         const outInfo = isArrivalTimeout(item);
-        const {diff, diffText, isOut} = outInfo;
-        console.log("outInfo ==>", outInfo)
-        return isOut
-    })
+        const {diff, diffText, isOut, inittimeText, timestampText} = outInfo;
+        return {
+            ...item,
+            ...outInfo
+        }
+    });
+
+    list = list.filter(item => item.isOut)
 
     return list;
 }
