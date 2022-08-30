@@ -12,6 +12,8 @@ const {filterRangeList, sendTimeoutEmail} = require("./utils");
 
 async function analysis() {
 
+    sendTimeoutEmail()
+    return;
     getAllList({
         inReq: getSwapinHistory,
         outReq: getSwapoutHistory,

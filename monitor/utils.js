@@ -1,6 +1,7 @@
 const {transferMilSecond, timestamp2DateTime} = require("../utils/time");
 const {emailTransporter} = require("../utils/email");
 const {EmailConfig} = require("../staticConfig");
+const {renderView} = require("../utils/viewEngin");
 
 function deepMapList(data) {
     let list = [];
@@ -69,20 +70,25 @@ function filterRangeList(list){
     return list;
 }
 
+
+
 function sendTimeoutEmail(){
 
-    let mailOptions = {
-        from: EmailConfig.from,
-        to: '13026610069@163.com',
-        subject: '监控报告',
-        html: '111'
-    };
-    emailTransporter.sendMail(mailOptions, (error, info) => {
-        if (error) {
-            return console.log(error);
-        }
-        console.log('邮件发送成功 ID：', info.messageId);
-    });
+    renderView().then((html) => {
+        let mailOptions = {
+            from: EmailConfig.from,
+            to: '13026610069@163.com',
+            subject: '监控报告',
+            html: html
+        };
+        emailTransporter.sendMail(mailOptions, (error, info) => {
+            if (error) {
+                return console.log(error);
+            }
+            console.log('邮件发送成功 ID：', info.messageId);
+        });
+    })
+
 }
 
 module.exports = {
