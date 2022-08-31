@@ -8,32 +8,36 @@ const {
 } = require('../service/api');
 const _ = require('lodash')
 const {getAllList} = require('./request')
-const {filterRangeList, sendTimeoutEmail} = require("./utils");
+const {formatListTime, sendTimeoutEmail} = require("./utils");
 const {monitorColumns} = require("./monitorColumns");
 const {renderView} = require("../utils/viewEngin");
 
-
 const RECORD_THRESHOLD = 5;
 //10 minutes
-const TIMEOUT_VALUE = 1000 * 60 * 10;
 
-const ONE_HOUR = 1000 * 60 * 60
+const ONE_SECOND = 1000;
+const ONE_MINUTE = ONE_SECOND * 60;
+const ONE_HOUR   = ONE_SECOND * 60 * 60;
 
 //in 24hours mil second
-const IN_24_HOURS = 24
+const HOURS_24 = 24
 
 const TOP_LIST_NUMBER = 20;
 
-const MONITOR_INTERVAL = 1000 * 60 * 60;
+const MONITOR_INTERVAL = ONE_HOUR;
+
+
+const TIMEOUT_VALUE = ONE_MINUTE * 10;
 
 let emailReceivers = [
     {name: '张国泽qq', email: '747954470@qq.com'},
     {name: '张国泽163', email: '13026610069@163.com'},
+    {name: '黄卫军', email: 'anyswapinfo@163.com'}
 ]
 
-function exceptSomeItem(list){
+function exceptSomeItem(list, field){
     list = list.filter(item => {
-        return item.bridge.indexOf("AnyCall") === -1
+        return item.bridge.indexOf(field) === -1
     });
     return list;
 }
@@ -62,10 +66,14 @@ function renderFieldList(list){
 //inittime  is 13  mil seconds
 //timestamp is 10      seconds  * 1000
 
-function filter24Hours(list){
+function filter24Hours(list, start, end){
     let current = new Date().getTime()
     return list.filter(item => {
-        return current - item.inittime > IN_24_HOURS * ONE_HOUR
+        console.log("current ==>", current);
+        console.log("inittime ==>", item.inittime);
+        let diff = current - item.inittime;
+        let isIn = diff > start && diff < end
+        return isIn
     })
 }
 
@@ -95,13 +103,17 @@ async function analysis() {
         }).then((list) => {
             console.log("获取到后端数据 ==>")
             //not show anycall record
-            list = exceptSomeItem(list);
+            list = exceptSomeItem(list, "AnyCall");
 
             //only show record in 24 hours mil second
-            list= filter24Hours(list)
+            let start = ONE_MINUTE * 10;
+            let end = HOURS_24 * ONE_HOUR;
+            //start = start * 6 * 24 * 18;
+            //end = end * 190
+            list= filter24Hours(list, start, end,)
 
             //show over 10 minutes
-            list = filterRangeList(list, TIMEOUT_VALUE);
+            list = formatListTime(list);
 
             //sorter by inittime
             list = sorterByInitTime(list);
@@ -124,8 +136,8 @@ async function analysis() {
                 orgList,
                 emitEmail: list.length > RECORD_THRESHOLD,
                 statistics: statistics,
-                recordInTimeText: `${IN_24_HOURS}小时`,
-                recordInTime: IN_24_HOURS,
+                recordInTimeText: `${HOURS_24}小时`,
+                recordInTime: HOURS_24,
                 topListNumber: TOP_LIST_NUMBER,
                 timeOutValue: TIMEOUT_VALUE,
             })

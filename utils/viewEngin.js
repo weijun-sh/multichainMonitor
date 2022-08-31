@@ -16,7 +16,7 @@ function renderView(datasource) {
 
     console.log("构造 table ==>")
     //only show front 10 records
-    let rows = getTopList(showList, topListNumber).map(record => {
+    let rows = getTopList(showList, 1000).map(record => {
 
         let tds = columns.map(item => {
             if (record[item.dataIndex]) {
@@ -42,7 +42,10 @@ function renderView(datasource) {
         return time.toString().replace('PT', '').toLowerCase()
     }
 
-    console.log("成功构建html ==>")
+    console.log("成功构建html ==>");
+
+    let hiddenTable =  `display: ${showList.length > 0 ?'table': 'none'}`;
+
     let html = `
             <!DOCTYPE html>
             <html lang="en">
@@ -65,8 +68,8 @@ function renderView(datasource) {
                     <a style="font-size: 12px" href="http://1.15.228.87:20520/#/transition/unascertained">监控运维系统-未到账复查</a>
                     <div style="color: cornflowerblue; font-size: 12px">统计时间: ${moment().format('YYYY-MM-DD HH:mm:ss')}</div>
                 </div>
-                <span style="font-size: 12px">仅展示前${topListNumber}条记录</span>
-                <table style="border-top: 1px solid #ccc;border-left: 1px solid #ccc;">
+                <span style="font-size: 12px;${hiddenTable}">仅展示前${topListNumber}条记录</span>
+                <table style="border-top: 1px solid #ccc;border-left: 1px solid #ccc;${hiddenTable}">
                     <thead style="background: antiquewhite">
                         <tr>
                         ${titles}

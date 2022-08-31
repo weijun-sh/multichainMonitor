@@ -35,19 +35,20 @@ function deepMapList(data) {
 //inittime  is 13  mil seconds
 function timeFromNow(inittime) {
     let current = new Date().getTime();
-    let gap = ((current - inittime)).toFixed(0);
+    let fromNow = ((current - inittime)).toFixed(0);
 
-    let fromNow = transferMilSecond(gap);
+    let FromNowText = transferMilSecond(fromNow);
 
     return {
         fromNow: fromNow,
+        FromNowText: FromNowText
     }
 }
 
 //timeout   is 13  mil seconds
 //inittime  is 13  mil seconds
 //timestamp is 10      seconds  * 1000
-function isArrivalTimeout(record, timeout = 0){
+function isArrivalTimeout(record, timeout){
     let {inittime, timestamp} = record;
 
     timestamp = timestamp * 1000;
@@ -56,35 +57,32 @@ function isArrivalTimeout(record, timeout = 0){
     //diffText  110days 20h 10m 4s
     let diffText = transferMilSecond(diff);
 
-    let isOut = diff > timeout;
     let inittimeText = dateFormatter(inittime);
     let timestampText = dateFormatter(timestamp);
 
-    let { fromNow:initFromNowText } = timeFromNow(inittime)
+    let { fromNow, FromNowText } = timeFromNow(inittime)
 
     return {
         diffText,
         diff,
-        isOut: isOut,
+        isOut:  false,
         inittimeText: inittimeText,
         timestampText: timestampText,
-        initFromNowText:initFromNowText
+        initFromNowText:FromNowText,
+        fromNow: fromNow
     }
 }
 
 
 
-function filterRangeList(list, TIMEOUT_VALUE){
+function formatListTime(list){
     list = list.map(item => {
-        const outInfo = isArrivalTimeout(item, TIMEOUT_VALUE);
-        const {diff, diffText, isOut, inittimeText, timestampText} = outInfo;
+        const outInfo = isArrivalTimeout(item);
         return {
             ...item,
             ...outInfo
         }
     });
-
-    list = list.filter(item => item.isOut)
 
     return list;
 }
@@ -113,6 +111,6 @@ function sendTimeoutEmail({html, theme, receivers = '13026610069@163.com'}){
 module.exports = {
     deepMapList,
     isArrivalTimeout,
-    filterRangeList,
+    formatListTime,
     sendTimeoutEmail
 }
