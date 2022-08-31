@@ -11,7 +11,10 @@ function renderView(templatePath, datasource){
                 reject(err)
                 return;
             }
-            let html = art.render(data.toString(), datasource)
+            let ds = JSON.stringify(datasource);
+            let html = art.render(data.toString(), {
+                datasource: ds
+            } )
             resolve(html)
         })
     })

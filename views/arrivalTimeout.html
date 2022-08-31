@@ -4,6 +4,8 @@
     <meta charset="UTF-8">
     <title>Title</title>
 </head>
+<script src="https://cdn.staticfile.org/jquery/1.10.2/jquery.min.js">
+</script>
 <style>
     table{
         margin: 10px;
@@ -13,30 +15,61 @@
         background: antiquewhite;
     }
     td{
-
+        padding: 2px 4px;
     }
 </style>
+<script>
+
+    $(function (){
+
+        function getDataSource(){
+            let datasource = "{{datasource}}";
+            datasource = datasource.replace(/&#34;/g, '"');
+            datasource = datasource.replace(/&#60;/g, '<');
+            datasource = datasource.replace(/&#62;/g, '>');
+            datasource = eval("datasource")
+            datasource = JSON.parse(datasource)
+            return datasource;
+        }
+
+
+        let datasource = getDataSource();
+        const {list, columns} = datasource;
+
+        let titles = columns.map(item => {
+            return `<td>${item.title}</td>`
+        }).join("")
+
+        $("thead>tr").html(titles);
+
+
+        list.map(record => {
+
+            let tr = $('<tr></tr>');
+
+            columns.map(item => {
+                if(record[item.dataIndex]){
+                    let td = $("<td></td>");
+                    td[0].innerHTML = record[item.dataIndex].text
+                    tr.append(td)
+                }
+            })
+
+            $("tbody").append(tr)
+
+
+        })
+    })
+</script>
 <body>
 
     <table border="1">
         <thead>
             <tr>
-                {{each columns as columnItem}}
-                    <td>{{columnItem.title}}</td>
-                {{/each}}
             </tr>
         </thead>
         <tbody>
-            {{each list as record}}
-            <tr>
-                {{each columns as columnItem}}
-                    <td >
 
-                        {{record[columnItem.dataIndex] && record[columnItem.dataIndex].text}}
-                    </td>
-                {{/each}}
-            </tr>
-            {{/each}}
         </tbody>
     </table>
 </body>

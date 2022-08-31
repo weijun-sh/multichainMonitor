@@ -19,14 +19,14 @@ let monitorColumns = [{
     dataIndex: 'timestamp',
     key: 'timestamp',
     render: (text, record) => {
-        return `${record.diffText}\n${record.timestampText}`
+        return `${record.diffText} <br/>${record.timestampText}`
     }
 }, {
     title: "注册时间",
     dataIndex: 'inittime',
     key: 'inittime',
     render: (text, record) => {
-        return `${record.initFromNowText} ago\n${record.inittimeText}`
+        return `${record.initFromNowText} ago<br/>${record.inittimeText}`
     }
 }];
 
