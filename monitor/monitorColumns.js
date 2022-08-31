@@ -13,10 +13,28 @@ function toChainLink({hash, chainid, bridge}) {
         chainParam = `&chainid=${chainid}`
     }
     hashParam = `hash=${hash}`
-    let href = `http://1.15.228.87:20520/transition/chain?${hashParam}${chainParam}${bridgeParam}`;
+    let href = `http://1.15.228.87:20520/#/transition/chain?${hashParam}${chainParam}${bridgeParam}`;
     return href
 }
 
+function csvRenderBridgeType(item) {
+    const {swaptype, bridgeOrRouter} = item;
+    if (bridgeOrRouter === 'router') {
+        return "Router"
+    }
+    if (bridgeOrRouter === 'bridge') {
+        let type = {
+            1: 'IN',
+            2: 'OUT',
+        }
+        let show = type[swaptype];
+        return show
+    }
+    return "-"
+}
+//timeout   is 13  mil seconds
+//inittime  is 13  mil seconds
+//timestamp is 10      seconds  * 1000
 let monitorColumns = [{
     title: "#",
     dataIndex: "rowKey",
@@ -32,7 +50,14 @@ let monitorColumns = [{
     render: (text, record) => {
         return record.bridge
     }
-}, {
+},{
+    title: '跨链类型',
+    dataIndex: 'swaptype',
+    key: 'swaptype',
+    render: (data, record) => {
+        return csvRenderBridgeType(record)
+    }
+},{
     title: '更新时间',
     dataIndex: 'timestamp',
     key: 'timestamp',
@@ -46,7 +71,7 @@ let monitorColumns = [{
     render: (text, record) => {
         return `${record.initFromNowText} ago<br/>${record.inittimeText}`
     }
-}/*, {
+}/*,{
     title: "详情",
     dataIndex: 'detail',
     key: 'detail',
@@ -59,7 +84,7 @@ let monitorColumns = [{
             bridge: bridge.data
         });
         //console.log("href ==>", href, bridge.data)
-        return `<a  href=${href}>详情</a>`
+        return `<a  href=${href}>搜索</a>`
     }
 }*/];
 

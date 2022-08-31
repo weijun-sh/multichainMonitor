@@ -1,14 +1,22 @@
-
+const {getTopList} = require("./arrays");
+var moment = require('moment');
+const Types = {
+    IN: 'swapin',
+    OUT: 'swapout',
+    Router: 'router'
+}
 function renderView(datasource) {
-    const {list, columns, title} = datasource;
+    const {showList, columns, title, statistics, recordInTimeText, topListNumber, timeOutValue, recordInTime} = datasource;
+    const {group, total} = statistics;
 
     let tdStyle=`style="padding: 2px 4px;border-bottom: 1px solid #ccc;border-right: 1px solid #ccc;font-size: 12px;"`
     let titles = columns.map(item => {
         return `<td ${tdStyle}>${item.title}</td>`
     }).join("")
 
-
-    let rows = list.map(record => {
+    console.log("构造 table ==>")
+    //only show front 10 records
+    let rows = getTopList(showList, topListNumber).map(record => {
 
         let tds = columns.map(item => {
             if (record[item.dataIndex]) {
@@ -21,7 +29,16 @@ function renderView(datasource) {
         return `<tr>${tds}</tr>`
     }).join('')
 
+    let sta = Object.keys(group).map(type => {
+        let value = group[type];
+        return `<li>${Types[type]}: ${value.length}</li>`
+    }).join("");
 
+    function formatDuring(time){
+        return time.toString().replace('PT', '').toLowerCase()
+    }
+
+    console.log("成功构建html ==>")
     let html = `
             <!DOCTYPE html>
             <html lang="en">
@@ -32,6 +49,18 @@ function renderView(datasource) {
             </style>
             <body>
                 <h3>${title}</h3>
+                <div style="background: blanchedalmond;padding: 10px;border-radius: 10px;margin-bottom: 10px;">
+                    <div style="font-size: 13px">共计: ${total}条记录</div>
+                    <ol style="font-size: 13px; margin-top: 4px">
+                        ${sta}
+                    </ol>
+                    <div style="font-size: 12px">
+                        ${formatDuring(moment.duration(recordInTime, 'hours'))}内, 
+                        超过${formatDuring(moment.duration(timeOutValue, 'milliseconds').humanize())} 未到账统计：
+                    </div>
+                    <a style="font-size: 12px" href="http://1.15.228.87:20520/#/transition/unascertained">监控运维系统-未到账复查</a>
+                </div>
+                <span style="font-size: 12px">仅展示前${topListNumber}条记录</span>
                 <table style="border-top: 1px solid #ccc;border-left: 1px solid #ccc;">
                     <thead style="background: antiquewhite">
                         <tr>
@@ -42,7 +71,9 @@ function renderView(datasource) {
                         ${rows}
                     </tbody>
                 </table>
-                
+                <footer style="font-size: 12px; margin-top: 10px; width: 100vw;text-align: center">
+                    Copyright © 2022 Multichain 监控运维系统 All rights reserved.
+                </footer>
             </body>
             </html>
     

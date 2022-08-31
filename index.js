@@ -9,6 +9,7 @@ const {renderView} = require("./utils/viewEngin");
 const {analysis, renderFieldList, exceptSomeItem} = require("./monitor");
 const {sendTimeoutEmail} = require("./monitor/utils");
 const viewsPath = path.join(__dirname, 'views');
+require('./utils/logs')
 app.set('views', viewsPath);
 app.set('view engine', 'ejs');
 
@@ -32,12 +33,24 @@ app.all("*", function (req, res, next) {
 
 app.get('/view', function (req, res){
     let theme = "未到账交易监控"
-    analysis().then(({showList}) => {
+    analysis().then(({
+                         showList,
+                         statistics,
+                         recordInTimeText,
+                         recordInTime,
+                         topListNumber,
+                         timeOutValue,
+    }) => {
 
         let html = renderView({
-            list: showList,
+            showList: showList,
             columns: monitorColumns,
-            title: theme
+            statistics: statistics,
+            title: theme,
+            recordInTimeText: recordInTimeText,
+            recordInTime: recordInTime,
+            topListNumber: topListNumber,
+            timeOutValue: timeOutValue
         });
         res.send(html)
     })
