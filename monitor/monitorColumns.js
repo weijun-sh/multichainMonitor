@@ -52,14 +52,14 @@ let monitorColumns = [{
     key: 'detail',
     render: (text, record) => {
         const {txid, fromChainID, bridge} = record
-
+        //console.log("record ==>", record)
         let href =toChainLink({
             hash: txid,
             chainid: fromChainID,
             bridge: bridge.data
         });
-        console.log("href ==>", href, bridge.data)
-        return `<a target="_blank" href=${href}>详情</a>`
+        //console.log("href ==>", href, bridge.data)
+        return `<a  href=${href}>详情</a>`
     }
 }];
 

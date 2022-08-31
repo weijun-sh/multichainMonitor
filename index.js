@@ -39,9 +39,9 @@ app.get('/view', function (req, res){
             return item
         });
 
-/*        list = list.filter(item => {
+        list = list.filter(item => {
             return item.bridge.indexOf("AnyCall") === -1
-        });*/
+        });
 
         let showList = [];
         showList = list.map(item => {
@@ -62,7 +62,8 @@ app.get('/view', function (req, res){
 
         renderView(filePath, {
             list: showList,
-            columns: monitorColumns
+            columns: monitorColumns,
+            title: "未到账交易监控"
         }).then((html) => {
             res.send(html)
             sendTimeoutEmail(html)

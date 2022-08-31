@@ -93,6 +93,7 @@ function filterRangeList(list){
 function sendTimeoutEmail(html){
 
 
+    console.log("html ==>", html)
     let mailOptions = {
         from: EmailConfig.from,
         to: '13026610069@163.com',
