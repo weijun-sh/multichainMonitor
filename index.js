@@ -6,7 +6,7 @@ var bodyParser = require('body-parser')
 app.use(express.static(path.join(__dirname, 'dist')));
 let todoModule = require('./routers/todo')
 const {renderView} = require("./utils/viewEngin");
-const {analysis} = require("./monitor");
+const {analysis, renderFieldList, exceptSomeItem} = require("./monitor");
 const {sendTimeoutEmail} = require("./monitor/utils");
 const viewsPath = path.join(__dirname, 'views');
 app.set('views', viewsPath);
@@ -31,43 +31,15 @@ app.all("*", function (req, res, next) {
 })
 
 app.get('/view', function (req, res){
-    let filePath = path.join(__dirname, './views/arrivalTimeout.html');
+    let theme = "未到账交易监控"
+    analysis().then(({showList}) => {
 
-    analysis().then(list => {
-        list = list.map((item, index) => {
-            item.rowKey = index + 1;
-            return item
-        });
-
-        list = list.filter(item => {
-            return item.bridge.indexOf("AnyCall") === -1
-        });
-
-        let showList = [];
-        showList = list.map(item => {
-            let record = {
-                ...item
-            }
-            monitorColumns.forEach(cItem => {
-                let value = record[cItem.dataIndex];
-                let text = cItem.render(value, record);
-                record[cItem.dataIndex] = {
-                    data: value,
-                    text: text
-                }
-            })
-            showList.push(record)
-            return record;
-        });
-
-        renderView(filePath, {
+        let html = renderView({
             list: showList,
             columns: monitorColumns,
-            title: "未到账交易监控"
-        }).then((html) => {
-            res.send(html)
-            sendTimeoutEmail(html)
-        })
+            title: theme
+        });
+        res.send(html)
     })
 
 })

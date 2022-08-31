@@ -1,7 +1,6 @@
 const {transferMilSecond, timestamp2DateTime} = require("../utils/time");
 const {emailTransporter} = require("../utils/email");
 const {EmailConfig} = require("../staticConfig");
-const {renderView} = require("../utils/viewEngin");
 const path = require("path");
 
 function deepMapList(data) {
@@ -48,7 +47,7 @@ function timeFromNow(inittime) {
 //timeout   is 13  mil seconds
 //inittime  is 13  mil seconds
 //timestamp is 10      seconds  * 1000
-function isArrivalTimeout(record, timeout = 1000 * 60 * 10){
+function isArrivalTimeout(record, timeout = 0){
     let {inittime, timestamp} = record;
 
     timestamp = timestamp * 1000;
@@ -73,9 +72,11 @@ function isArrivalTimeout(record, timeout = 1000 * 60 * 10){
     }
 }
 
-function filterRangeList(list){
+
+
+function filterRangeList(list, TIMEOUT_VALUE){
     list = list.map(item => {
-        const outInfo = isArrivalTimeout(item);
+        const outInfo = isArrivalTimeout(item, TIMEOUT_VALUE);
         const {diff, diffText, isOut, inittimeText, timestampText} = outInfo;
         return {
             ...item,
@@ -90,22 +91,22 @@ function filterRangeList(list){
 
 
 
-function sendTimeoutEmail(html){
+function sendTimeoutEmail({html, theme, receivers = '13026610069@163.com'}){
 
 
-    console.log("html ==>", html)
+    //console.log("html ==>", html)
     let mailOptions = {
         from: EmailConfig.from,
-        to: '13026610069@163.com',
-        subject: '监控报告',
+        to: receivers,
+        subject: theme,
         html: html
     };
     emailTransporter.sendMail(mailOptions, (error, info) => {
         if (error) {
-            return console.log(error);
+            return console.log("email send error ==>",error);
         }
         console.log('邮件发送成功 ID：', info.messageId);
-    });
+    })
 
 }
 

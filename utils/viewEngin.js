@@ -1,13 +1,10 @@
 
-function renderView(templatePath, datasource) {
-    return staticView(datasource);
-}
-
-function staticView(datasource) {
+function renderView(datasource) {
     const {list, columns, title} = datasource;
 
+    let tdStyle=`style="padding: 2px 4px;border-bottom: 1px solid #ccc;border-right: 1px solid #ccc;font-size: 12px;"`
     let titles = columns.map(item => {
-        return `<td>${item.title}</td>`
+        return `<td ${tdStyle}>${item.title}</td>`
     }).join("")
 
 
@@ -15,51 +12,28 @@ function staticView(datasource) {
 
         let tds = columns.map(item => {
             if (record[item.dataIndex]) {
-                let td = `<td>${record[item.dataIndex].text}</td>`;
+                let td = `<td ${tdStyle}>${record[item.dataIndex].text}</td>`;
                 return td
             }
             return ''
         }).join('')
 
         return `<tr>${tds}</tr>`
-    })
+    }).join('')
 
-    return new Promise(resolve => {
-        let html = `
+
+    let html = `
             <!DOCTYPE html>
             <html lang="en">
             <head>
                 <meta charset="UTF-8">
             </head>
             <style>
-                table{
-                    margin: 10px;
-                    border-top: 1px solid #ccc;
-                    border-left: 1px solid #ccc;
-                }
-                thead{
-                    background: antiquewhite;
-                }
-                td{
-                    padding: 2px 4px;
-                    border-bottom: 1px solid #ccc;
-                    border-right: 1px solid #ccc;
-                    font-size: 12px;
-                }
-/*                td:nth-child(2){
-                    width: 44px;
-                    white-space: break-spaces;
-                    overflow: hidden;
-                    line-break: anywhere;
-                }*/
-                h1{
-                text-align: center;
-                }
             </style>
             <body>
                 <h3>${title}</h3>
-                <table >
-                    <thead>
+                <table style="border-top: 1px solid #ccc;border-left: 1px solid #ccc;">
+                    <thead style="background: antiquewhite">
                         <tr>
                         ${titles}
                         </tr>
@@ -73,12 +47,9 @@ function staticView(datasource) {
             </html>
     
         `
-        resolve(html)
-    })
-
-
-
+    return html
 }
+
 
 module.exports = {
     renderView

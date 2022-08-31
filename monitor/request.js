@@ -9,13 +9,13 @@ const {
 const {deepMapList} = require("./utils");
 
 async function getAllList({inReq, outReq, routerReq, page}) {
-    console.log(page + " start req ==>");
+    //console.log(page + " start req ==>");
     let outRes = await outReq({params: {bridge: "all"}, sendOption: {mock: {data: unOutRes}}});
     let inRes = await inReq({params: {bridge: "all"}, sendOption: {mock: {data: unInRes}}});
     let routerRes = await routerReq({params: {bridge: "all"}, sendOption: {mock: {data: unRouterRes}}});
-    console.log(page + " end in req ==>",inRes);
-    console.log(page + " end out req ==>",outReq);
-    console.log(page + " end router req ==>",routerReq);
+    //console.log(page + " end in req ==>",inRes);
+    //console.log(page + " end out req ==>",outReq);
+    //console.log(page + " end router req ==>",routerReq);
 
     if(!inRes ){
         return Promise.reject(new Error("in 网络错误"))
