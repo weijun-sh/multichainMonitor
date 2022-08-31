@@ -1,4 +1,22 @@
 
+function toChainLink({hash, chainid, bridge}) {
+    if (!hash) {
+        return null
+    }
+    let bridgeParam = '';
+    let chainParam = '';
+    let hashParam = '';
+    if(bridge){
+        bridgeParam = `&bridge=${bridge}`
+    }
+    if(chainid){
+        chainParam = `&chainid=${chainid}`
+    }
+    hashParam = `hash=${hash}`
+    let href = `http://1.15.228.87:20520/transition/chain?${hashParam}${chainParam}${bridgeParam}`;
+    return href
+}
+
 let monitorColumns = [{
     title: "#",
     dataIndex: "rowKey",
@@ -27,6 +45,21 @@ let monitorColumns = [{
     key: 'inittime',
     render: (text, record) => {
         return `${record.initFromNowText} ago<br/>${record.inittimeText}`
+    }
+}, {
+    title: "详情",
+    dataIndex: 'detail',
+    key: 'detail',
+    render: (text, record) => {
+        const {txid, fromChainID, bridge} = record
+
+        let href =toChainLink({
+            hash: txid,
+            chainid: fromChainID,
+            bridge: bridge.data
+        });
+        console.log("href ==>", href, bridge.data)
+        return `<a target="_blank" href=${href}>详情</a>`
     }
 }];
 
