@@ -46,7 +46,7 @@ let monitorColumns = [{
     render: (text, record) => {
         return `${record.initFromNowText} ago<br/>${record.inittimeText}`
     }
-}, {
+}/*, {
     title: "详情",
     dataIndex: 'detail',
     key: 'detail',
@@ -61,7 +61,7 @@ let monitorColumns = [{
         //console.log("href ==>", href, bridge.data)
         return `<a  href=${href}>详情</a>`
     }
-}];
+}*/];
 
 module.exports = {
     monitorColumns
