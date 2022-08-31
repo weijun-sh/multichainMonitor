@@ -29,9 +29,13 @@ function renderView(datasource) {
         return `<tr>${tds}</tr>`
     }).join('')
 
-    let sta = Object.keys(group).map(type => {
+    let sta = Object.keys(Types).map(type => {
         let value = group[type];
-        return `<li>${Types[type]}: ${value.length}</li>`
+        let length = 0;
+        if(value){
+            length = value.length;
+        }
+        return `<li>${Types[type]}: ${length}</li>`
     }).join("");
 
     function formatDuring(time){
@@ -50,15 +54,16 @@ function renderView(datasource) {
             <body>
                 <h3>${title}</h3>
                 <div style="background: blanchedalmond;padding: 10px;border-radius: 10px;margin-bottom: 10px;">
-                    <div style="font-size: 13px">共计: ${total}条记录</div>
+                    <div style="font-size: 13px">共计: ${total}条记录 </div>
                     <ol style="font-size: 13px; margin-top: 4px">
                         ${sta}
                     </ol>
                     <div style="font-size: 12px">
                         ${formatDuring(moment.duration(recordInTime, 'hours'))}内, 
-                        超过${formatDuring(moment.duration(timeOutValue, 'milliseconds').humanize())} 未到账统计：
+                        超过${formatDuring(moment.duration(timeOutValue, 'milliseconds').humanize())} 未到账统计
                     </div>
                     <a style="font-size: 12px" href="http://1.15.228.87:20520/#/transition/unascertained">监控运维系统-未到账复查</a>
+                    <div style="color: cornflowerblue; font-size: 12px">统计时间: ${moment().format('YYYY-MM-DD HH:mm:ss')}</div>
                 </div>
                 <span style="font-size: 12px">仅展示前${topListNumber}条记录</span>
                 <table style="border-top: 1px solid #ccc;border-left: 1px solid #ccc;">

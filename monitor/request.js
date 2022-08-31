@@ -10,30 +10,36 @@ const {deepMapList} = require("./utils");
 
 async function getAllList({inReq, outReq, routerReq, page}) {
     //console.log(page + " start req ==>");
-    let outRes = await outReq({params: {bridge: "all"}, sendOption: {mock: {data: unOutRes}}});
-    let inRes = await inReq({params: {bridge: "all"}, sendOption: {mock: {data: unInRes}}});
-    let routerRes = await routerReq({params: {bridge: "all"}, sendOption: {mock: {data: unRouterRes}}});
-    //console.log(page + " end in req ==>",inRes);
-    //console.log(page + " end out req ==>",outReq);
-    //console.log(page + " end router req ==>",routerReq);
+    let outRes = await outReq({params: {bridge: "all"}, sendOption: {mock: {data:  unOutRes}}});
+    console.log(page + " end out req ==>");
+    let inRes = await inReq({params: {bridge: "all"}, sendOption: {mock: {data:  unInRes}}});
+    console.log(page + " end in req ==>");
+    let routerRes = await routerReq({params: {bridge: "all"}, sendOption: {mock: {data:  unRouterRes}}});
+    console.log(page + " end router req ==>");
 
     if(!inRes ){
+        console.log("in 网络错误 ==>")
         return Promise.reject(new Error("in 网络错误"))
     }
     if(!outRes ){
+        console.log("out 网络错误 ==>")
         return Promise.reject(new Error("out 网络错误"))
     }
     if(!routerRes ){
+        console.log("router 网络错误 ==>")
         return Promise.reject(new Error("router 网络错误"))
     }
 
     if(inRes.result.code !== 0 ){
+        console.log("in 发生错误 ==>", routerRes.result.msg)
         return Promise.reject(new Error("in 发生错误"))
     }
     if(outRes.result.code !== 0){
+        console.log("out 发生错误 ==>", routerRes.result.msg)
         return Promise.reject(new Error("out 发生错误"))
     }
     if(routerRes.result.code !== 0){
+        console.log("outer 发生错误 ==>", routerRes.result.msg)
         return Promise.reject(new Error("router 发生错误"))
     }
     let inList = deepMapList(inRes.result.data);
