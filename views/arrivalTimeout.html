@@ -19,14 +19,28 @@
     }
 </style>
 <script>
-
+    function htmlDecodeByRegExp(str) {
+        var s = "";
+        if (str.length == 0) return "";
+        s = str.replace(/&amp;/g, "&");
+        s = s.replace(/&lt;/g, "<");
+        s = s.replace(/&gt;/g, ">");
+        s = s.replace(/&nbsp;/g, " ");
+        s = s.replace(/&#39;/g, "\'");
+        s = s.replace(/&quot;/g, "\"");
+        s = s.replace(/&#34;/g, '"');
+        s = s.replace(/&#60;/g, '<');
+        s = s.replace(/&#62;/g, '>');
+        return s;
+    }
     $(function (){
 
         function getDataSource(){
             let datasource = "{{datasource}}";
-            datasource = datasource.replace(/&#34;/g, '"');
+            datasource = htmlDecodeByRegExp(datasource);
+/*            datasource = datasource.replace(/&#34;/g, '"');
             datasource = datasource.replace(/&#60;/g, '<');
-            datasource = datasource.replace(/&#62;/g, '>');
+            datasource = datasource.replace(/&#62;/g, '>');*/
             datasource = eval("datasource")
             datasource = JSON.parse(datasource)
             return datasource;

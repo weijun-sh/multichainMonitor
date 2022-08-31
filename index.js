@@ -38,6 +38,11 @@ app.get('/view', function (req, res){
             item.rowKey = index + 1;
             return item
         });
+
+/*        list = list.filter(item => {
+            return item.bridge.indexOf("AnyCall") === -1
+        });*/
+
         let showList = [];
         showList = list.map(item => {
             let record = {
