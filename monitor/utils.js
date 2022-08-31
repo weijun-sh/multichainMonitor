@@ -1,4 +1,4 @@
-const {transferMilSecond, timestamp2DateTime} = require("../utils/time");
+const {transferMilSecond, timestamp2DateTime, dateFormatter} = require("../utils/time");
 const {emailTransporter} = require("../utils/email");
 const {EmailConfig} = require("../staticConfig");
 const path = require("path");
@@ -35,7 +35,7 @@ function deepMapList(data) {
 //inittime  is 13  mil seconds
 function timeFromNow(inittime) {
     let current = new Date().getTime();
-    let gap = ((current - inittime) / 1000).toFixed(0);
+    let gap = ((current - inittime)).toFixed(0);
 
     let fromNow = transferMilSecond(gap);
 
@@ -57,8 +57,8 @@ function isArrivalTimeout(record, timeout = 0){
     let diffText = transferMilSecond(diff);
 
     let isOut = diff > timeout;
-    let inittimeText = timestamp2DateTime(inittime);
-    let timestampText = timestamp2DateTime(timestamp);
+    let inittimeText = dateFormatter(inittime);
+    let timestampText = dateFormatter(timestamp);
 
     let { fromNow:initFromNowText } = timeFromNow(inittime)
 

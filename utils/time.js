@@ -43,7 +43,29 @@ function timestamp2DateTime(timestamp){
     return `${date} ${time}`
 }
 
+function dateFormatter(timestamp) {
+    if (!timestamp) {
+        return '-'
+    }
+    if ((timestamp + "").length === 10) {
+        timestamp = timestamp * 1000
+    }
+    let date = new Date(timestamp)
+    var seperator1 = "-";
+    var month = date.getMonth() + 1;
+    var strDate = date.getDate();
+    if (month >= 1 && month <= 9) {
+        month = "0" + month;
+    }
+    if (strDate >= 0 && strDate <= 9) {
+        strDate = "0" + strDate;
+    }
+    var currentdate = date.getFullYear() + seperator1 + month + seperator1 + strDate + " " + date.toLocaleTimeString();
+    return currentdate;
+}
+
 module.exports = {
     transferMilSecond,
-    timestamp2DateTime
+    timestamp2DateTime,
+    dateFormatter
 }

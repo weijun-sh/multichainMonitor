@@ -10,7 +10,7 @@ const {deepMapList} = require("./utils");
 
 async function getAllList({inReq, outReq, routerReq, page}) {
     //console.log(page + " start req ==>");
-    let outRes = await outReq({params: {bridge: "all"}, sendOption: {mock: {data:  unOutRes}}});
+    let outRes = await outReq({params: {bridge: "all"}, sendOption: {mock: {data: unOutRes}}});
     console.log(page + " end out req ==>");
     let inRes = await inReq({params: {bridge: "all"}, sendOption: {mock: {data:  unInRes}}});
     console.log(page + " end in req ==>");
