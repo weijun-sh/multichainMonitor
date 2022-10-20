@@ -3,6 +3,7 @@ var express = require('express');
 var path = require('path');
 var app = express();
 var bodyParser = require('body-parser')
+var {MAINTENANCE_CONF} = require('./config/index')
 const {renderView} = require("./monitor/viewEngin");
 const {analysis} = require("./monitor");
 const viewsPath = path.join(__dirname, 'views');
@@ -53,6 +54,6 @@ app.get('/view', function (req, res){
 })
 
 
-app.listen(7890, function () {
+app.listen(MAINTENANCE_CONF.SERVER_PORT, function () {
     console.log("start ==>", new Date().toLocaleString())
 });

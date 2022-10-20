@@ -9,7 +9,7 @@ const {getAllList} = require('./request')
 const {formatListTime} = require("./utils");
 const {monitorColumns} = require("./monitorColumns");
 const {renderView} = require("./viewEngin");
-const {MAINTENANCE_CONF} = require("../config/config");
+const {MAINTENANCE_CONF} = require("../config/index");
 const {ONE_HOUR} = require("../const/timeValue");
 
 const RECORD_THRESHOLD = MAINTENANCE_CONF.RECORD_THRESHOLD;

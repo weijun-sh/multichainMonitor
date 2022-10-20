@@ -1,5 +1,5 @@
 const http = require('../utils/http');
-const {SERVER_URL} = require("../config/config");
+const {SERVER_URL} = require("../config/index");
 let getSwapHistory = function ({params, sendOption}) {
     return http.http({
         method: 'post',

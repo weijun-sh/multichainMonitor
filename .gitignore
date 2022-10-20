@@ -112,3 +112,5 @@ dist.back
 dist
 
 dist.tar
+
+src/config/index.js
