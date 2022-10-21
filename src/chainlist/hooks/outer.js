@@ -11,11 +11,11 @@ function outerStart(chain, rpcs) {
                 const {data, latency} = res;
                 data.latency = latency;
                 data.chainId = chain.chainId;
-                let formattedData = formatOutData(rpc, data);
+                let formattedData = formatOutData(rpc, data, null);
                 list[index] = getRpcData(STATUS_SUCCESS, formattedData);
             }).catch((err) => {
-                //console.log("outer error", err)
-                list[index] = getRpcData(STATUS_ERROR, {rpc: rpc, chainId: chain.chainId, errMsg: "network error"});
+                let formattedData = formatOutData(rpc, {rpc: rpc, chainId: chain.chainId,}, "network error");
+                list[index] = getRpcData(STATUS_ERROR, formattedData );
             }).finally(() => {
 
                 if (counter >= list.length - 1) {

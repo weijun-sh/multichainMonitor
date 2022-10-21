@@ -129,7 +129,10 @@ function getTopHeight(list) {
     return result
 }
 
-function formatOutData(rpc, data) {
+function formatOutData(rpc, data, errorMsg) {
+    if(errorMsg){
+        return {rpc: rpc, isInner: false, chainId: data.chainId};
+    }
     let height = data?.result?.number ?? null;
     let latency = data?.latency ?? null;
     if (height) {

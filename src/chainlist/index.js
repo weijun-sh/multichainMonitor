@@ -20,10 +20,13 @@ async function startChainList() {
 
 async function getInnerView() {
     let [inRes, outRes] = await startChainList();
+    const total = [...inRes, ...outRes];
+    console.log("inRes ==>", inRes)
     console.log("outRes ==>", outRes)
 
     let inTable = '';
     let outTable = '';
+    let totalTable = '';
 
     if (inRes) {
         const tBody = inRes.map((item, index) => {
@@ -96,12 +99,47 @@ async function getInnerView() {
             </table>
         `
     }
+    if (total) {
+        const tBody = total.map((item, index) => {
+            const {data, status} = item;
+            const {height = '', latency = '', rpc, errMsg = '', isInner} = data;
+            return (
+                `<tr>
+                    <td>${index + 1}</td>
+                    <td>${rpc}</td>
+                    <td>${height}</td>
+                    <td>${latency}</td>
+                    <td>${status}</td>
+                    <td>${errMsg}</td>
+                    <td>${isInner ? "INNER":'OUT'}</td>
+                 </tr>`
+            )
+        })
+        totalTable = `
+            <table >
+                <thead>
+                    <tr>
+                        <td>id</td>
+                        <td>rpc</td>
+                        <td>height</td>
+                        <td>latency</td>
+                        <td>status</td>
+                        <td>msg</td>
+                        <td>in/out</td>
+                    </tr>
+                </thead>
+                <tbody>
+                    ${tBody}                        
+                </tbody>
+            </table>
+        `
+    }
 
-    return [inTable.replace(/,/g, ""), outTable.replace(/,/g, "")]
+    return [inTable.replace(/,/g, ""), outTable.replace(/,/g, ""), totalTable.replace(/,/g, "")]
 }
 
 router.get("/view", async function (req, res) {
-    let [inTable, outTable] = await getInnerView();
+    let [inTable, outTable, totalTable] = await getInnerView();
 
     let html = '';
 
@@ -126,8 +164,7 @@ router.get("/view", async function (req, res) {
                 </style>
             </head>
             <body>
-                ${inTable}
-                ${outTable}
+                ${totalTable}
             </body>
         </html>
     `
