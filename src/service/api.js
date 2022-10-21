@@ -1,7 +1,7 @@
-const http = require('../utils/http');
+const {http} = require('../utils/http');
 const {SERVER_URL} = require("../config/index");
 let getSwapHistory = function ({params, sendOption}) {
-    return http.http({
+    return http({
         method: 'post',
         url: SERVER_URL.URL_MAINTENANCE,
         data: {
@@ -17,7 +17,7 @@ let getSwapHistory = function ({params, sendOption}) {
 }
 
 let getSwapinHistory = function ({params, sendOption}) {
-    return http.http({
+    return http({
         method: 'post',
         url: SERVER_URL.URL_MAINTENANCE,
         data: {
@@ -33,7 +33,7 @@ let getSwapinHistory = function ({params, sendOption}) {
 }
 
 let getSwapoutHistory = function ({params, sendOption}) {
-    return http.http({
+    return http({
         method: 'post',
         url: SERVER_URL.URL_MAINTENANCE,
         data: {
@@ -48,71 +48,10 @@ let getSwapoutHistory = function ({params, sendOption}) {
     })
 }
 
-let getReview = function ({params, sendOption}) {
-    const {bridge, starttime, endtime} = params;
-
-    return http.http({
-        method: 'post',
-        url: SERVER_URL.URL_MAINTENANCE,
-        data: {
-            "jsonrpc": "2.0",
-            "method": "swap.GetSwapReview",
-            "params": [{
-                "bridge": bridge,
-                "starttime": starttime,
-                "endtime": endtime,
-            }],
-            "id": 1
-        },
-        sendOption
-    })
-}
-
-let getInReview = function ({params, sendOption}) {
-    const {bridge, starttime, endtime} = params;
-
-    return http.http({
-        method: 'post',
-        url: SERVER_URL.URL_MAINTENANCE,
-        data: {
-            "jsonrpc": "2.0",
-            "method": "swap.GetSwapinReview",
-            "params": [{
-                "bridge": bridge,
-                "starttime": starttime,
-                "endtime": endtime,
-            }],
-            "id": 1
-        },
-        sendOption
-    })
-}
-
-let getOutReview = function ({params, sendOption}) {
-    const {bridge, starttime, endtime} = params;
-
-    return http.http({
-        method: 'post',
-        url: SERVER_URL.URL_MAINTENANCE,
-        data: {
-            "jsonrpc": "2.0",
-            "method": "swap.GetSwapoutReview",
-            "params": [{
-                "bridge": bridge,
-                "starttime": starttime,
-                "endtime": endtime,
-            }],
-            "id": 1
-        },
-        sendOption
-    })
-}
-
-
 let sendEmail = function ({params, sendOption}) {
     const {to, html, subject} = params;
 
-    return http.http({
+    return http({
         method: 'post',
         url: SERVER_URL.URL_EMAIL + '/email/send',
         data: {
@@ -123,13 +62,42 @@ let sendEmail = function ({params, sendOption}) {
         sendOption
     })
 }
+/** =============================== */
+const getBlockHeight = function (queParams) {
+    const {params, sendOption} = queParams;
+    return http({
+        method: 'post',
+        url: SERVER_URL.URL_CHAINLIST,
+        data: {
+            "jsonrpc": "2.0",
+            "method": "minfo.GetFullnodeInfo",
+            "params": params,
+            "id": 1
+        },
+        sendOption
+    })
+}
+
+const interChains = function (queParams) {
+    const {params, sendOption} = queParams;
+    return http({
+        method: 'post',
+        url: SERVER_URL.URL_CHAINLIST,
+        data: {
+            jsonrpc: "2.0",
+            method: "minfo.GetFullnodeChainid",
+            params: [],
+            id: 1
+        },
+        sendOption
+    })
+}
 
 module.exports = {
     getSwapoutHistory,
     getSwapHistory,
     getSwapinHistory,
-    getReview,
-    getInReview,
-    getOutReview,
-    sendEmail
+    sendEmail,
+    getBlockHeight,
+    interChains
 }

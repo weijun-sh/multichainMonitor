@@ -121,7 +121,7 @@ async function analysis() {
             }
             let hours = milSecond2Hours(NOT_OVER_TIME);
             let emitEmail = list.length >= RECORD_THRESHOLD;
-            console.log("解析成功 ==>",NOT_OVER_TIME, hours);
+            console.log("解析成功 ==>");
             console.log("emitEmail",emitEmail, list.length, RECORD_THRESHOLD);
             resolve({
                 showList,
