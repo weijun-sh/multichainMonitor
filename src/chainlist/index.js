@@ -10,81 +10,127 @@ async function startChainList() {
     let chain = OUTER_CHAIN_LIST[0];
     chain.isInner = true;
 
-    let res = await innerStart(chain);
-    if (!res) {
-        console.log("inner res err ==>", res)
-        return;
-    }
+    let inRes = await innerStart(chain);
 
     let outRes = await outerStart(chain, chain.rpc)
 
-    console.log("res ==>", res, outRes)
-    return res
+    return [inRes, outRes]
 }
 
 
-//startChainList()
+async function getInnerView() {
+    let [inRes, outRes] = await startChainList();
+    console.log("outRes ==>", outRes)
 
+    let inTable = '';
+    let outTable = '';
 
-router.get("/view", async function (req, res) {
-    let result = await startChainList();
-
-    let html = '';
-
-    if (result) {
-        const tbodys = result.map((item, index) => {
-            const {height, latency, rpc} = item.data;
+    if (inRes) {
+        const tBody = inRes.map((item, index) => {
+            const {data, status} = item;
+            const {height = '', latency = '', rpc, errMsg = ''} = data;
             return (
                 `<tr>
                     <td>${index + 1}</td>
                     <td>${rpc}</td>
                     <td>${height}</td>
                     <td>${latency}</td>
-                    <td>${item.status}</td>
+                    <td>${status}</td>
+                    <td>${errMsg}</td>
+                    <td>In</td>
                  </tr>`
             )
         })
-        html = `
-            <!DOCTYPE html>
-
-            <html lang="en">
-                <head>
-                    <style>
-                        table{
-                            border: 1px solid deepskyblue;
-                            border-bottom: none;
-                        }
-                        td{
-                            border-right: 1px solid deepskyblue;
-                            border-bottom: 1px solid deepskyblue;
-                            padding: 6px 12px;
-                        }
-                        td:last-child{
-                            border-right: none;
-                        }
-                    </style>
-                </head>
-                <body>
-                
-
-                <table >
-                    <thead>
-                        <tr>
-                            <td>id</td>
-                            <td>rpc</td>
-                            <td>height</td>
-                            <td>latency</td>
-                            <td>status</td>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        ${tbodys}                        
-                    </tbody>
-                </table>
-                </body>
-            </html>
+        inTable = `
+            <table >
+                <thead>
+                    <tr>
+                        <td>id</td>
+                        <td>rpc</td>
+                        <td>height</td>
+                        <td>latency</td>
+                        <td>status</td>
+                        <td>msg</td>
+                        <td>in/out</td>
+                    </tr>
+                </thead>
+                <tbody>
+                    ${tBody}                        
+                </tbody>
+            </table>
         `
     }
+
+    if (outRes) {
+        const tBody = outRes.map((item, index) => {
+            const {data, status} = item;
+            const {height = '', latency = '', rpc, errMsg = ''} = data;
+            return (
+                `<tr>
+                    <td>${index + 1}</td>
+                    <td>${rpc}</td>
+                    <td>${height}</td>
+                    <td>${latency}</td>
+                    <td>${status}</td>
+                    <td>${errMsg}</td>
+                    <td>OUT</td>
+                 </tr>`
+            )
+        })
+        outTable = `
+            <table >
+                <thead>
+                    <tr>
+                        <td>id</td>
+                        <td>rpc</td>
+                        <td>height</td>
+                        <td>latency</td>
+                        <td>status</td>
+                        <td>msg</td>
+                        <td>in/out</td>
+                    </tr>
+                </thead>
+                <tbody>
+                    ${tBody}                        
+                </tbody>
+            </table>
+        `
+    }
+
+    return [inTable.replace(/,/g, ""), outTable.replace(/,/g, "")]
+}
+
+router.get("/view", async function (req, res) {
+    let [inTable, outTable] = await getInnerView();
+
+    let html = '';
+
+    html = `
+        <!DOCTYPE html>
+
+        <html lang="en">
+            <head>
+                <style>
+                    table{
+                        border: 1px solid deepskyblue;
+                        border-bottom: none;
+                    }
+                    td{
+                        border-right: 1px solid deepskyblue;
+                        border-bottom: 1px solid deepskyblue;
+                        padding: 2px 2px;
+                    }
+                    td:last-child{
+                        border-right: none;
+                    }
+                </style>
+            </head>
+            <body>
+                ${inTable}
+                ${outTable}
+            </body>
+        </html>
+    `
 
     res.send(html)
 })

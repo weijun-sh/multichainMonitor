@@ -52,7 +52,7 @@ function innerStart(chain){
             })
             resolve(list);
         }).catch((err) => {
-            window.error("inner err", 'err', err, 'chain', chain)
+            console.log("inner err", 'err', err, 'chain', chain)
         }).finally(() => {
         })
     })

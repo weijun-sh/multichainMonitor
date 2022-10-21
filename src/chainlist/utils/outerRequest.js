@@ -11,8 +11,6 @@ const rpcBody = {
 const fetchWssChain = (url) => {
 
     return new Promise((resolve, reject) => {
-        reject();
-        return
         const socket = new ws(url);
         let requestStart = 0;
 
@@ -22,6 +20,7 @@ const fetchWssChain = (url) => {
         });
 
         socket.on("message", function (event){
+            console.log("socket message")
             const data = JSON.parse(event.data);
 
             const latency = Date.now() - requestStart;
@@ -29,6 +28,7 @@ const fetchWssChain = (url) => {
         });
 
         socket.on("error", function (){
+            console.log("socket error")
             reject()
         });
     });
