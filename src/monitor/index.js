@@ -13,7 +13,7 @@ const {formatListTime} = require("./utils");
 const {monitorColumns} = require("./monitorColumns");
 const {renderView} = require("./viewEngin");
 const {MAINTENANCE_CONF} = require("../config/index");
-const {ONE_HOUR} = require("../const/timeValue");
+const {HOUR_1} = require("../const/timeValue");
 const startChainList = require("../chainlist");
 const express = require("express");
 const app = express();
@@ -83,7 +83,7 @@ function addRowKey(list){
 }
 
 function milSecond2Hours(mil){
-    return mil * 1 / ONE_HOUR
+    return mil * 1 / HOUR_1
 }
 
 async function analysis() {

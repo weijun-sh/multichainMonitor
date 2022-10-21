@@ -1,5 +1,6 @@
-import {rpcRequest} from "../../../mlib/mu/rpcRequest";
+const {rpcRequest} = require("./rpcRequest") ;
 
+var ws = require("ws").client;
 const rpcBody = {
     jsonrpc: '2.0',
     method: 'eth_getBlockByNumber',
@@ -7,31 +8,35 @@ const rpcBody = {
     id: 1,
 };
 
-export const fetchWssChain = (url) => {
+const fetchWssChain = (url) => {
 
     return new Promise((resolve, reject) => {
-        const socket = new WebSocket(url);
-        let requestStart;
+        reject();
+        return
+        const socket = new ws(url);
+        let requestStart = 0;
 
-        socket.onopen = function () {
-            socket.send(rpcBody);
+        socket.on('open', function (){
             requestStart = Date.now();
-        };
+            socket.send(rpcBody);
+        });
 
-        socket.onmessage = function (event) {
+        socket.on("message", function (event){
             const data = JSON.parse(event.data);
 
             const latency = Date.now() - requestStart;
             resolve({ ...data, latency });
-        };
+        });
 
-        socket.onerror = function (e) {
+        socket.on("error", function (){
             reject()
-        };
+        });
     });
+
+
 };
 
-export const fetchHttpChain = (url) => {
+const fetchHttpChain = (url) => {
     let httpQuery = rpcRequest({
         url: url,
         method: 'post',
@@ -48,7 +53,7 @@ export const fetchHttpChain = (url) => {
     return httpQuery;
 }
 
-export const fetchOuter = (url) => {
+const fetchOuter = (url) => {
     let query = null;
     if(url.includes('wss://')){
         query = fetchWssChain(url)
@@ -57,4 +62,8 @@ export const fetchOuter = (url) => {
     }
 
     return query;
+}
+
+module.exports = {
+    fetchOuter,
 }

@@ -1,14 +1,14 @@
-import {getRpcData, STATUS_ERROR, STATUS_LOADING, STATUS_SUCCESS} from "../constant/rpcState";
-import _ from 'lodash'
-import {
+const {getRpcData, STATUS_ERROR, STATUS_LOADING, STATUS_SUCCESS} = require("../constant/rpcState") ;
+const _ = require('lodash')
+const {
     SCORE_ERROR,
     SCORE_LOADING, SCORE_PARAMS,
     SCORE_SUCCESS_GREEN,
     SCORE_SUCCESS_RED,
     SCORE_SUCCESS_ORANGE
-} from "../constant/valueConst";
+} = require("../constant/valueConst") ;
 
-export function calcScore(list) {
+function calcScore(list) {
     /**TODO replaced by sortHeightLatency*/
     list = list.sort((a1, b1) => {
         let a = _.cloneDeep(a1);
@@ -98,7 +98,7 @@ export function calcScore(list) {
     return list;
 }
 
-export function sortHeightLatency(list) {
+function sortHeightLatency(list) {
     let result = list.sort((a, b) => {
         let aHeight = 0;
         let aLatency = 9999999;
@@ -123,13 +123,13 @@ export function sortHeightLatency(list) {
     return result;
 }
 
-export function getTopHeight(list) {
+function getTopHeight(list) {
 
     let result = sortHeightLatency(list);
     return result
 }
 
-export function formatOutData(rpc, data) {
+function formatOutData(rpc, data) {
     let height = data?.result?.number ?? null;
     let latency = data?.latency ?? null;
     if (height) {
@@ -141,7 +141,7 @@ export function formatOutData(rpc, data) {
     return {rpc: rpc, height, latency, isInner: false, chainId: data.chainId};
 }
 
-export function getScoreParams(chain) {
+function getScoreParams(chain) {
     const {chainId} = chain;
 
     let defaultParam = 3
@@ -150,4 +150,9 @@ export function getScoreParams(chain) {
         return param
     }
     return defaultParam
+}
+
+module.exports = {
+    calcScore,
+    formatOutData
 }

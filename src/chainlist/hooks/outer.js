@@ -1,8 +1,8 @@
-import {fetchOuter} from "../utils/outerRequest";
-import {formatOutData} from "../utils";
-import {getRpcData, STATUS_ERROR, STATUS_SUCCESS} from "../constant/rpcState";
+const {fetchOuter} = require("../utils/outerRequest");
+const {formatOutData} = require("../utils");
+const {getRpcData, STATUS_ERROR, STATUS_SUCCESS} = require("../constant/rpcState");
 
-function startOuter(chain, rpcs){
+function outerStart(chain, rpcs) {
     let list = new Array(rpcs.length);
     let counter = 0;
     return new Promise((resolve, reject) => {
@@ -14,10 +14,11 @@ function startOuter(chain, rpcs){
                 let formattedData = formatOutData(rpc, data);
                 list[index] = getRpcData(STATUS_SUCCESS, formattedData);
             }).catch((err) => {
-                list[index] = getRpcData( STATUS_ERROR, {rpc:rpc, chainId: chain.chainId, errMsg: "network error" });
+                //console.log("outer error", err)
+                list[index] = getRpcData(STATUS_ERROR, {rpc: rpc, chainId: chain.chainId, errMsg: "network error"});
             }).finally(() => {
 
-                if(counter >= list.length - 1){
+                if (counter >= list.length - 1) {
                     resolve(list);
                     return;
                 }
@@ -27,6 +28,6 @@ function startOuter(chain, rpcs){
     })
 }
 
-export default {
-    startOuter
+module.exports = {
+    outerStart
 }

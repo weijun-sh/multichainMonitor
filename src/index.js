@@ -8,6 +8,7 @@ const chainlist = require('./chainlist/index')
 const viewsPath = path.join(__dirname, 'views');
 app.set('views', viewsPath);
 app.set('view engine', 'ejs');
+app.use('/chainlist',chainlist.router)
 
 // 解析 application/json
 app.use(bodyParser.json({limit: '50mb'}));
