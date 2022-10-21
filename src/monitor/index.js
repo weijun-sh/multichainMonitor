@@ -4,6 +4,9 @@ const {
     getSwapinHistory,
     sendEmail
 } = require('../service/api');
+
+
+
 const _ = require('lodash')
 const {getAllList} = require('./request')
 const {formatListTime} = require("./utils");
@@ -11,7 +14,10 @@ const {monitorColumns} = require("./monitorColumns");
 const {renderView} = require("./viewEngin");
 const {MAINTENANCE_CONF} = require("../config/index");
 const {ONE_HOUR} = require("../const/timeValue");
-
+const startChainList = require("../chainlist");
+const express = require("express");
+const app = express();
+const router = express.Router;
 const RECORD_THRESHOLD = MAINTENANCE_CONF.RECORD_THRESHOLD;
 //10 minutes
 
@@ -205,6 +211,31 @@ function monitorInterval(){
 }
 
 monitorInterval();
+
+/*router.get('/view', function (req, res){
+    let theme = "未到账交易监控"
+    analysis().then(({
+                         showList,
+                         statistics,
+                         recordInTimeText,
+                         recordInTime,
+                         topListNumber,
+                         timeOutValue,
+                     }) => {
+        let html = renderView({
+            showList: showList,
+            columns: monitorColumns,
+            statistics: statistics,
+            title: theme,
+            recordInTimeText: recordInTimeText,
+            recordInTime: recordInTime,
+            topListNumber: topListNumber,
+            timeOutValue: timeOutValue
+        });
+        res.send(html)
+    })
+
+})*/
 
 module.exports = {
     analysis,

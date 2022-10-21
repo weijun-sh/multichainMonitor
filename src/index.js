@@ -1,11 +1,10 @@
-const {monitorColumns} = require("./monitor/monitorColumns");
-var express = require('express');
-var path = require('path');
-var app = express();
-var bodyParser = require('body-parser')
-var {MAINTENANCE_CONF} = require('./config/index')
-const {renderView} = require("./monitor/viewEngin");
-const {analysis} = require("./monitor");
+const express = require('express');
+const path = require('path');
+const app = express();
+const bodyParser = require('body-parser')
+const {MAINTENANCE_CONF} = require('./config/index')
+const chainlist = require('./chainlist/index')
+//const monitor = require("./monitor/index")
 const viewsPath = path.join(__dirname, 'views');
 app.set('views', viewsPath);
 app.set('view engine', 'ejs');
@@ -22,37 +21,14 @@ app.all("*", function (req, res, next) {
     res.header('Access-Control-Allow-Headers', 'content-type');
     // 跨域允许的请求方式
     res.header('Access-Control-Allow-Methods', 'DELETE,PUT,POST,GET,OPTIONS');
-    if (req.method.toLowerCase() === 'options')
+    if (req.method.toLowerCase() === 'options'){
         res.send(200); // 让options 尝试请求快速结束
-    else
+    }
+    else{
         next();
+    }
 })
-
-app.get('/view', function (req, res){
-    let theme = "未到账交易监控"
-    analysis().then(({
-                         showList,
-                         statistics,
-                         recordInTimeText,
-                         recordInTime,
-                         topListNumber,
-                         timeOutValue,
-    }) => {
-        let html = renderView({
-            showList: showList,
-            columns: monitorColumns,
-            statistics: statistics,
-            title: theme,
-            recordInTimeText: recordInTimeText,
-            recordInTime: recordInTime,
-            topListNumber: topListNumber,
-            timeOutValue: timeOutValue
-        });
-        res.send(html)
-    })
-
-})
-
+//app.use()
 
 
 app.listen(MAINTENANCE_CONF.SERVER_PORT, function () {
