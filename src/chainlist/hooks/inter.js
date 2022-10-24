@@ -3,10 +3,6 @@ const {getRpcData, STATUS_SUCCESS, STATUS_ERROR} = require("../constant/rpcState
 
 function innerStart(chain){
     return new Promise((resolve, reject) => {
-        if(!chain.isInner){
-            resolve('success')
-            return;
-        }
 
         getBlockHeight({
             params: [{chainid: chain.chainId.toString()}],

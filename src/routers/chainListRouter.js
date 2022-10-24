@@ -1,12 +1,14 @@
 const express = require('express')
 const router = express.Router();
-const {getTableView} = require('../chainlist/index')
+const {chainListMonitor} = require('../chainlist/index')
 const {systemStorageSave} = require("../fileStorage");
 const {guid} = require("../utils/math");
 const _ = require('lodash')
 router.get("/view", async function (req, res) {
-    let [inTable, outTable, totalTable, sortedTable, errorTable] = await getTableView();
+    let [allTable, errorTable] = await chainListMonitor();
 
+    let allView = allTable.join('').replace(/,/g, '');
+    let errorView = errorTable.join('').replace(/,/g, '');
     let html = '';
 
     html = `
@@ -30,9 +32,8 @@ router.get("/view", async function (req, res) {
                 </style>
             </head>
             <body>
-                ${sortedTable}
-                <div>error list</div>
-                ${errorTable}
+                ${allView}
+                ${errorView}
             </body>
         </html>
     `

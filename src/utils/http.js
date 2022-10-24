@@ -75,7 +75,7 @@ function http(options) {
             }
             reject && reject(res)
 
-            console.log("request res", "res", res, "data", data,"params", data.params)
+            //console.log("request res", "res", res, "data", data,"params", data.params)
 
         }).catch((err) => {
             if(typeof err.message === 'string'){
