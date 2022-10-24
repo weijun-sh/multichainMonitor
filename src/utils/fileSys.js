@@ -1,8 +1,6 @@
 const fs = require('fs');
 const path = require('path');
 
-
-
 function fileIsExit(path){
     let result = fs.existsSync(path)
     return result;
@@ -42,11 +40,6 @@ function fileGetObj(path){
     }
 }
 
-function fileTesting(path){
-    fileSaveObj(path, {title: "this is a man"})
-    let obj = fileGetObj(path);
-    console.log("read ==>", obj)
-}
 module.exports = {
     fileGetObj,
     fileSaveObj,
