@@ -5,7 +5,7 @@ const {systemStorageSave} = require("../fileStorage");
 const {guid} = require("../utils/math");
 const _ = require('lodash')
 router.get("/view", async function (req, res) {
-    let [inTable, outTable, totalTable, sortedTable] = await getTableView();
+    let [inTable, outTable, totalTable, sortedTable, errorTable] = await getTableView();
 
     let html = '';
 
@@ -31,6 +31,8 @@ router.get("/view", async function (req, res) {
             </head>
             <body>
                 ${sortedTable}
+                <div>error list</div>
+                ${errorTable}
             </body>
         </html>
     `

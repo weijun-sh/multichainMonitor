@@ -31,6 +31,21 @@ function sortHeightLatency(list) {
     return result;
 }
 
+
+function getErrorInner(top,innerList){
+    let list = innerList.filter(item => {
+
+        if(top.data.height - item.data.height >= 1 ){
+            return true;
+        }
+        if(item.data.latency > 3000){
+            return true
+        }
+        return false
+    })
+    return list;
+}
+
 async function startChainList() {
 
     let chain = OUTER_CHAIN_LIST[0];
@@ -42,21 +57,21 @@ async function startChainList() {
 
     let total = [...inRes, ...outRes];
 
-    let sortedList = sortHeightLatency(total)
-    return [inRes, outRes, total, sortedList]
+    let sortedList = sortHeightLatency(total);
+
+    let errorList =  getErrorInner(sortedList[0], inRes);
+
+    return [inRes, outRes, total, sortedList, errorList]
 }
 
-
-
 async function getTableView() {
-    let [inRes, outRes, total, sortedList] = await startChainList();
-    console.log("inRes ==>", inRes)
-    console.log("outRes ==>", outRes)
+    let [inRes, outRes, total, sortedList, errorList] = await startChainList();
 
     let inTable = '';
     let outTable = '';
     let totalTable = '';
     let sortedTable = '';
+    let errorTable = '';
 
     if (inRes) {
         const tBody = inRes.map((item, index) => {
@@ -203,8 +218,44 @@ async function getTableView() {
         `
         sortedTable = sortedTable.replace(/,/g, "")
     }
+    if (errorList) {
+        const tBody = errorList.map((item, index) => {
+            const {data, status} = item;
+            const {height = '', latency = '', rpc, errMsg = '', isInner} = data;
+            return (
+                `<tr>
+                    <td>${index + 1}</td>
+                    <td>${rpc}</td>
+                    <td>${height}</td>
+                    <td>${latency}</td>
+                    <td>${status}</td>
+                    <td>${errMsg}</td>
+                    <td>${isInner ? "INNER":'OUT'}</td>
+                 </tr>`
+            )
+        })
+        errorTable = `
+            <table >
+                <thead>
+                    <tr>
+                        <td>id</td>
+                        <td>rpc</td>
+                        <td>height</td>
+                        <td>latency</td>
+                        <td>status</td>
+                        <td>msg</td>
+                        <td>in/out</td>
+                    </tr>
+                </thead>
+                <tbody>
+                    ${tBody}                        
+                </tbody>
+            </table>
+        `
+        errorTable = errorTable.replace(/,/g, "")
+    }
 
-    return [inTable, outTable, totalTable,sortedTable]
+    return [inTable, outTable, totalTable,sortedTable, errorTable]
 }
 
 module.exports = {
