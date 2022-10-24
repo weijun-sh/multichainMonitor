@@ -4,6 +4,7 @@ const app = express();
 const bodyParser = require('body-parser')
 const {MAINTENANCE_CONF} = require('./config/index')
 const chainlist = require('./chainlist/index')
+const {StorageTesting} = require("./fileStorage/index");
 //const monitor = require("./monitor/index")
 const viewsPath = path.join(__dirname, 'views');
 app.set('views', viewsPath);
@@ -29,7 +30,8 @@ app.all("*", function (req, res, next) {
         next();
     }
 })
-//app.use()
+
+StorageTesting()
 
 
 app.listen(MAINTENANCE_CONF.SERVER_PORT, function () {
