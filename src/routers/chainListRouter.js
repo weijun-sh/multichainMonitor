@@ -109,8 +109,8 @@ router.post("/msg/delete", function (req, res) {
     })
 });
 
-router.get('/msg/get', function (req, res){
-    const {id} = req.query;
+router.post('/msg/get', function (req, res){
+    const {id} = req.body;
 
     if(!id){
         res.send({
@@ -140,6 +140,22 @@ router.get('/msg/get', function (req, res){
     })
 })
 
+router.post('/msg/list', function (req, res){
+
+    res.send({
+        code: 0,
+        msg: 'success',
+        data: global.systemStorage.chainList.msgList
+    })
+})
+
+
+router.get('/msg/view', function (req, res){
+
+    res.render("msg",{
+        msg: global.systemStorage.chainList.msgList,
+    })
+})
 
 module.exports = {
     router,
