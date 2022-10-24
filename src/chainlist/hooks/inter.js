@@ -10,7 +10,7 @@ function innerStart(chain){
                 retry: {
                     counter: 0
                 },
-                timeout: 7,
+                timeout: 5,
                 isToastError: false,
                 isConsoleError: false,
             },

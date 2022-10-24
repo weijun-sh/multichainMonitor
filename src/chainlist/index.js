@@ -61,7 +61,7 @@ async function analysisChainList(id) {
 
     if(!chain){
         console.log("chain not exits ==>", id, chain,)
-        return []
+        return Promise.reject([])
     }
 
     let inRes = await innerStart(chain);
@@ -72,7 +72,7 @@ async function analysisChainList(id) {
 
     let sortedList = sortHeightLatency(total);
 
-    console.log("inRes ==>", inRes)
+    console.log("get list success ==>", id)
     let errorList =  getErrorInner(sortedList[0], inRes);
 
     return [inRes, outRes, total, sortedList, errorList]
@@ -140,7 +140,7 @@ async function chainListMonitor() {
     let errorTable = [];
     let allTable = [];
 
-
+    ids = ids.slice(0,3)
     for await (let id of ids){
         let [inRes, outRes, total, sortedList, errorList] = await analysisChainList(id);
         if (!inRes || !outRes) {

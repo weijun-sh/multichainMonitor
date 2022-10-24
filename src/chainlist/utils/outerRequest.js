@@ -46,7 +46,7 @@ const fetchHttpChain = (url) => {
             retry: {
                 counter: 0
             },
-            timeout: 7,
+            timeout: 5,
         }
     })
 
