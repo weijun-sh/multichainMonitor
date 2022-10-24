@@ -48,7 +48,7 @@ async function startChainList() {
 
 
 
-async function getInnerView() {
+async function getTableView() {
     let [inRes, outRes, total, sortedList] = await startChainList();
     console.log("inRes ==>", inRes)
     console.log("outRes ==>", outRes)
@@ -207,41 +207,8 @@ async function getInnerView() {
     return [inTable, outTable, totalTable,sortedTable]
 }
 
-router.get("/view", async function (req, res) {
-    let [inTable, outTable, totalTable, sortedTable] = await getInnerView();
-
-    let html = '';
-
-    html = `
-        <!DOCTYPE html>
-
-        <html lang="en">
-            <head>
-                <style>
-                    table{
-                        border: 1px solid deepskyblue;
-                        border-bottom: none;
-                    }
-                    td{
-                        border-right: 1px solid deepskyblue;
-                        border-bottom: 1px solid deepskyblue;
-                        padding: 2px 2px;
-                    }
-                    td:last-child{
-                        border-right: none;
-                    }
-                </style>
-            </head>
-            <body>
-                ${sortedTable}
-            </body>
-        </html>
-    `
-
-    res.send(html)
-})
-
 module.exports = {
     startChainList,
     router,
+    getTableView
 };

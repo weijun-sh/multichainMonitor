@@ -113,3 +113,4 @@ dist
 
 dist.tar
 src/config/index.js
+src/fileStorage/SYS_STORAGE.json
