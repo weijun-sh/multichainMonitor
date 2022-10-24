@@ -14,7 +14,11 @@ const INIT_DATA = {
 }
 
 function systemStorageSave(obj){
-    fileSaveObj(systemStoragePath, obj)
+    let result = fileSaveObj(systemStoragePath, obj);
+    if(result){
+        global.systemStorage = obj
+    }
+
 }
 
 function systemStorageGet(){
@@ -44,5 +48,7 @@ function systemStorageInit(){
 }
 
 module.exports = {
-    systemStorageInit
+    systemStorageInit,
+    systemStorageSave,
+    systemStorageGet
 }

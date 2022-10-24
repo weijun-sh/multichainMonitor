@@ -24,8 +24,10 @@ function fileSaveObj(path, obj){
     try{
         let save = JSON.stringify(obj)
         fileWriteSync(path, save)
+        return true
     }catch (e){
         console.log("file save obj fail", e)
+        return false
     }
 }
 

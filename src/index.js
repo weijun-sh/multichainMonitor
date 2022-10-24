@@ -11,12 +11,6 @@ const fileStorage = require('./fileStorage/index');
 fileStorage.systemStorageInit()
 
 const bodyParser = require('body-parser')
-const monitorRouter = require('./routers/monitorRouter')
-const storageRouter = require('./routers/storageRouter')
-const chainRouter = require('./routers/chainListRouter')
-app.use('/chainlist',chainRouter.router)
-app.use('/storage', storageRouter.router)
-app.use('/monitor', monitorRouter.router)
 
 // 解析 application/json
 app.use(bodyParser.json({limit: '50mb'}));
@@ -36,6 +30,13 @@ app.all("*", function (req, res, next) {
         next();
     }
 })
+
+const monitorRouter = require('./routers/monitorRouter')
+const storageRouter = require('./routers/storageRouter')
+const chainRouter = require('./routers/chainListRouter')
+app.use('/chainlist',chainRouter.router)
+app.use('/storage', storageRouter.router)
+app.use('/monitor', monitorRouter.router)
 
 app.listen(MAINTENANCE_CONF.SERVER_PORT, function () {
     console.log("start ==>", new Date().toLocaleString())
