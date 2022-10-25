@@ -43,9 +43,9 @@ router.get("/view", async function (req, res) {
 
 
 router.post("/msg/add", function (req, res) {
-    const {title, msg,} = req.body;
+    const {title, content,chainId, rpc} = req.body;
 
-    if(!title || !msg){
+    if(!title || !content || !chainId || !rpc){
         res.send({
             code: 1,
             msg: 'param error',
@@ -58,17 +58,98 @@ router.post("/msg/add", function (req, res) {
         global.systemStorage.chainList.msgList = []
     }
 
+    let findIndex = getIndexByChainIdRpc(chainId, rpc)
+    if(findIndex !== -1){
+        res.send({
+            code: 1,
+            msg: '消息已存在',
+            data: null
+        })
+        return;
+    }
+
     global.systemStorage.chainList.msgList.push({
         title,
-        msg,
-        id: guid()
+        content,
+        id: guid(),
+        chainId: chainId,
+        rpc: rpc
     });
 
     systemStorageSave(global.systemStorage)
     res.send({
         code: 0,
         msg: 'success',
-        data: global.systemStorage.msgList
+        data: {}
+    })
+});
+
+function getIndexById(id){
+    let findIndex = -1;
+    global.systemStorage.chainList.msgList.find((item, index) => {
+        if(item.id === id){
+            findIndex = index
+            return true;
+        }
+    })
+    return findIndex;
+}
+function getIndexByChainIdRpc(chainId, rpc){
+    let findIndex = -1;
+    global.systemStorage.chainList.msgList.find((item, index) => {
+        if(item.chainId === chainId && item.rpc === rpc){
+            findIndex = index
+            return true;
+        }
+    })
+    return findIndex;
+}
+
+router.post("/msg/update", function (req, res) {
+    const {title, content,chainId, rpc, id} = req.body;
+
+    if(!title || !content || !chainId || !rpc || !id){
+        res.send({
+            code: 1,
+            msg: 'param error',
+            data: null
+        })
+        return
+    }
+
+    if (!global.systemStorage.chainList.msgList) {
+        res.send({
+            code: 1,
+            msg: '无消息',
+            data: null
+        })
+        return
+    }
+
+    let findIndex = getIndexById(id);
+
+    if(findIndex === -1){
+        res.send({
+            code: 1,
+            msg: '消息不存在',
+            data: null
+        })
+        return
+    }
+
+    global.systemStorage.chainList.msgList[findIndex] = {
+        title,
+        content,
+        id: id,
+        chainId: chainId,
+        rpc: rpc
+    }
+
+    systemStorageSave(global.systemStorage)
+    res.send({
+        code: 0,
+        msg: 'success',
+        data: {}
     })
 });
 
