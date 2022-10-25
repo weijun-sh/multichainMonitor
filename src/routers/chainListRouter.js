@@ -43,9 +43,9 @@ router.get("/view", async function (req, res) {
 
 
 router.post("/msg/add", function (req, res) {
-    const {title, content,chainId, rpc} = req.body;
+    const {title, content,chainId} = req.body;
 
-    if(!title || !content || !chainId || !rpc){
+    if(!title || !content || !chainId){
         res.send({
             code: 1,
             msg: 'param error',
@@ -58,22 +58,12 @@ router.post("/msg/add", function (req, res) {
         global.systemStorage.chainList.msgList = []
     }
 
-/*    let findIndex = getIndexByChainIdRpc(chainId, rpc)
-    if(findIndex !== -1){
-        res.send({
-            code: 1,
-            msg: '消息已存在',
-            data: null
-        })
-        return;
-    }*/
-
     global.systemStorage.chainList.msgList.push({
         title,
         content,
         id: guid(),
         chainId: chainId,
-        rpc: rpc
+        isProcess: false
     });
 
     systemStorageSave(global.systemStorage)
@@ -94,10 +84,10 @@ function getIndexById(id){
     })
     return findIndex;
 }
-function getIndexByChainIdRpc(chainId, rpc){
+function getIndexByChainIdRpc(chainId){
     let findIndex = -1;
     global.systemStorage.chainList.msgList.find((item, index) => {
-        if(item.chainId === chainId && item.rpc === rpc){
+        if(item.chainId === chainId){
             findIndex = index
             return true;
         }
@@ -106,9 +96,9 @@ function getIndexByChainIdRpc(chainId, rpc){
 }
 
 router.post("/msg/update", function (req, res) {
-    const {title, content,chainId, rpc, id} = req.body;
+    const {title, content,chainId, id, isProcess} = req.body;
 
-    if(!title || !content || !chainId || !rpc || !id){
+    if(!title || !content || !chainId  || !id){
         res.send({
             code: 1,
             msg: 'param error',
@@ -142,7 +132,7 @@ router.post("/msg/update", function (req, res) {
         content,
         id: id,
         chainId: chainId,
-        rpc: rpc
+        isProcess: isProcess
     }
 
     systemStorageSave(global.systemStorage)

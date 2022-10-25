@@ -22,7 +22,7 @@ function fileReadSync(path){
 
 function fileSaveObj(path, obj){
     try{
-        let save = JSON.stringify(obj)
+        let save = JSON.stringify(obj, undefined, 2)
         fileWriteSync(path, save)
         return true
     }catch (e){
