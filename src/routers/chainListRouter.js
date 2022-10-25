@@ -58,7 +58,7 @@ router.post("/msg/add", function (req, res) {
         global.systemStorage.chainList.msgList = []
     }
 
-    let findIndex = getIndexByChainIdRpc(chainId, rpc)
+/*    let findIndex = getIndexByChainIdRpc(chainId, rpc)
     if(findIndex !== -1){
         res.send({
             code: 1,
@@ -66,7 +66,7 @@ router.post("/msg/add", function (req, res) {
             data: null
         })
         return;
-    }
+    }*/
 
     global.systemStorage.chainList.msgList.push({
         title,
