@@ -82,7 +82,10 @@ function getIndexById(id){
             return true;
         }
     })
-    return findIndex;
+    if(findIndex !== -1){
+        return [findIndex, global.systemStorage.chainList.msgList[findIndex]];
+    }
+    return [findIndex, null]
 }
 function getIndexByChainIdRpc(chainId){
     let findIndex = -1;
@@ -98,7 +101,7 @@ function getIndexByChainIdRpc(chainId){
 router.post("/msg/update", function (req, res) {
     const {title, content,chainId, id, process} = req.body;
 
-    if(!title || !content || !chainId  || !id){
+    if(!id){
         res.send({
             code: 1,
             msg: 'param error',
@@ -116,7 +119,7 @@ router.post("/msg/update", function (req, res) {
         return
     }
 
-    let findIndex = getIndexById(id);
+    let [findIndex, findItem] = getIndexById(id);
 
     if(findIndex === -1){
         res.send({
@@ -127,13 +130,16 @@ router.post("/msg/update", function (req, res) {
         return
     }
 
-    global.systemStorage.chainList.msgList[findIndex] = {
+    let newItem = {
+        ...findItem,
         title,
         content,
-        id: id,
-        chainId: chainId,
-        process: process
+        process,
     }
+    console.log("findItem ==>", findItem)
+    console.log("new Item ==>", newItem)
+
+    global.systemStorage.chainList.msgList[findIndex] = newItem
 
     systemStorageSave(global.systemStorage)
     res.send({
