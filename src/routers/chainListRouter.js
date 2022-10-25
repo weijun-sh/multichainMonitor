@@ -63,7 +63,7 @@ router.post("/msg/add", function (req, res) {
         content,
         id: guid(),
         chainId: chainId,
-        isProcess: false
+        process: null
     });
 
     systemStorageSave(global.systemStorage)
@@ -96,7 +96,7 @@ function getIndexByChainIdRpc(chainId){
 }
 
 router.post("/msg/update", function (req, res) {
-    const {title, content,chainId, id, isProcess} = req.body;
+    const {title, content,chainId, id, process} = req.body;
 
     if(!title || !content || !chainId  || !id){
         res.send({
@@ -132,7 +132,7 @@ router.post("/msg/update", function (req, res) {
         content,
         id: id,
         chainId: chainId,
-        isProcess: isProcess
+        process: process
     }
 
     systemStorageSave(global.systemStorage)
