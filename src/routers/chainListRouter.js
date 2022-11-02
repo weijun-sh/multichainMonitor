@@ -223,10 +223,13 @@ router.post('/msg/get', function (req, res){
 
 router.post('/msg/list', function (req, res){
 
+    let list = global.systemStorage.chainList.msgList.sort((a, b) => {
+        return  b.createTime - a.createTime;
+    })
     res.send({
         code: 0,
         msg: 'success',
-        data: global.systemStorage.chainList.msgList
+        data: list
     })
 })
 
