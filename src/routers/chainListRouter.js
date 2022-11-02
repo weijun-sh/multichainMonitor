@@ -42,10 +42,12 @@ router.get("/view", async function (req, res) {
 })
 
 
-router.post("/msg/add", function (req, res) {
-    const {title, content,chainId} = req.body;
 
-    if(!title || !content || !chainId){
+
+router.post("/msg/add", function (req, res) {
+    const {title, content,chainId, createTime} = req.body;
+
+    if(!title || !content || !chainId || !createTime){
         res.send({
             code: 1,
             msg: 'param error',
@@ -63,7 +65,8 @@ router.post("/msg/add", function (req, res) {
         content,
         id: guid(),
         chainId: chainId,
-        process: null
+        process: null,
+        createTime: createTime
     });
 
     systemStorageSave(global.systemStorage)
@@ -136,8 +139,6 @@ router.post("/msg/update", function (req, res) {
         content,
         process,
     }
-    console.log("findItem ==>", findItem)
-    console.log("new Item ==>", newItem)
 
     global.systemStorage.chainList.msgList[findIndex] = newItem
 

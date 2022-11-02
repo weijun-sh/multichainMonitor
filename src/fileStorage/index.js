@@ -1,5 +1,6 @@
 const path =require("path") ;
 const {fileSaveObj, fileGetObj, fileIsExit} = require("../utils/fileSys");
+const fs = require("fs");
 
 const systemStoragePath = path.join(__dirname, './', 'SYS_STORAGE.json')
 global.systemStorage = null;
@@ -47,6 +48,16 @@ function systemStorageInit(){
     }
 }
 
+function listenSync(){
+
+    const filePath = path.join(__dirname, 'SYS_STORAGE.json');
+    fs.watchFile(filePath, (cur, prv) => {
+        if (filePath) {
+            global.systemStorage = systemStorageGet()
+        }
+    })
+}
+listenSync()
 module.exports = {
     systemStorageInit,
     systemStorageSave,
