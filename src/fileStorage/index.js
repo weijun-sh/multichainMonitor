@@ -10,7 +10,8 @@ const INIT_DATA = {
 
     },
     chainList: {
-
+        msgList: [],
+        history: [],
     }
 }
 

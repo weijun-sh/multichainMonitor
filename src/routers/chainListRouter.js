@@ -3,7 +3,41 @@ const router = express.Router();
 const {chainListMonitor} = require('../chainlist/index')
 const {systemStorageSave} = require("../fileStorage");
 const {guid} = require("../utils/math");
-const _ = require('lodash')
+const _ = require('lodash');
+
+function getIndexById(id){
+    let findIndex = -1;
+    global.systemStorage.chainList.msgList.find((item, index) => {
+        if(item.id === id){
+            findIndex = index
+            return true;
+        }
+    })
+    if(findIndex !== -1){
+        return [findIndex, global.systemStorage.chainList.msgList[findIndex]];
+    }
+    return [findIndex, null]
+}
+function getIndexByChainIdRpc(chainId){
+    let findIndex = -1;
+    global.systemStorage.chainList.msgList.find((item, index) => {
+        if(item.chainId === chainId){
+            findIndex = index
+            return true;
+        }
+    })
+    return findIndex;
+}
+
+function filterHistory(id){
+    let history = global.systemStorage.chainList.history;
+
+    let list = history.filter(item => {
+        return item.id === id
+    });
+    return list;
+}
+
 router.get("/view", async function (req, res) {
     let [allTable, errorTable] = await chainListMonitor();
 
@@ -41,9 +75,6 @@ router.get("/view", async function (req, res) {
     res.send(html)
 })
 
-
-
-
 router.post("/msg/add", function (req, res) {
     const {title, content,chainId, createTime} = req.body;
 
@@ -77,33 +108,8 @@ router.post("/msg/add", function (req, res) {
     })
 });
 
-function getIndexById(id){
-    let findIndex = -1;
-    global.systemStorage.chainList.msgList.find((item, index) => {
-        if(item.id === id){
-            findIndex = index
-            return true;
-        }
-    })
-    if(findIndex !== -1){
-        return [findIndex, global.systemStorage.chainList.msgList[findIndex]];
-    }
-    return [findIndex, null]
-}
-function getIndexByChainIdRpc(chainId){
-    let findIndex = -1;
-    global.systemStorage.chainList.msgList.find((item, index) => {
-        if(item.chainId === chainId){
-            findIndex = index
-            return true;
-        }
-    })
-    return findIndex;
-}
-
 router.post("/msg/update", function (req, res) {
-    const {title, content,chainId, id, process} = req.body;
-
+    const {title, content, id, process} = req.body;
     if(!id){
         res.send({
             code: 1,
@@ -139,6 +145,8 @@ router.post("/msg/update", function (req, res) {
         content,
         process,
     }
+
+    global.systemStorage.chainList.history.push(findItem);
 
     global.systemStorage.chainList.msgList[findIndex] = newItem
 
@@ -181,7 +189,6 @@ router.post("/msg/delete", function (req, res) {
     _.remove(global.systemStorage.chainList.msgList, function (item) {
         return item.id === id
     });
-    console.log("global.systemStorage.chainList.msgList ==> ", global.systemStorage.chainList.msgList)
     systemStorageSave(global.systemStorage)
     res.send({
         code: 0,
@@ -214,6 +221,7 @@ router.post('/msg/get', function (req, res){
         return
     }
 
+    item.history = filterHistory(id)
     res.send({
         code: 0,
         msg: 'success',
@@ -222,10 +230,20 @@ router.post('/msg/get', function (req, res){
 })
 
 router.post('/msg/list', function (req, res){
-
-    let list = global.systemStorage.chainList.msgList.sort((a, b) => {
+    let mgList = global.systemStorage.chainList.msgList;
+    let history = global.systemStorage.chainList.history;
+    let list = mgList.sort((a, b) => {
         return  b.createTime - a.createTime;
+    });
+
+    console.log("mgList", mgList)
+    console.log("history", history)
+    list = list.map(item => {
+        item.history = filterHistory(item.id);
+        return item;
     })
+
+
     res.send({
         code: 0,
         msg: 'success',
@@ -235,7 +253,6 @@ router.post('/msg/list', function (req, res){
 
 
 router.get('/msg/view', function (req, res){
-
     res.render("msg",{
         msg: global.systemStorage.chainList.msgList,
     })
