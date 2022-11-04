@@ -96,7 +96,7 @@ router.post("/msg/add", function (req, res) {
         content,
         id: guid(),
         chainId: chainId,
-        process: null,
+        deal: null,
         createTime: createTime
     });
 
@@ -109,7 +109,7 @@ router.post("/msg/add", function (req, res) {
 });
 
 router.post("/msg/update", function (req, res) {
-    const {title, content, id, process} = req.body;
+    const {title, content, id, deal} = req.body;
     if(!id){
         res.send({
             code: 1,
@@ -143,7 +143,7 @@ router.post("/msg/update", function (req, res) {
         ...findItem,
         title,
         content,
-        process,
+        deal,
     }
 
     global.systemStorage.chainList.history.push(findItem);
