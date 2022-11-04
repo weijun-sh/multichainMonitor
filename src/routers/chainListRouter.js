@@ -146,6 +146,7 @@ router.post("/msg/update", function (req, res) {
         deal,
     }
 
+    delete findItem.history
     global.systemStorage.chainList.history.push(findItem);
 
     global.systemStorage.chainList.msgList[findIndex] = newItem
