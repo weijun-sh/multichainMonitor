@@ -139,6 +139,8 @@ router.post("/msg/update", function (req, res) {
         return
     }
 
+    delete findItem.history;
+
     let newItem = {
         ...findItem,
         title,
@@ -146,7 +148,7 @@ router.post("/msg/update", function (req, res) {
         deal,
     }
 
-    delete findItem.history
+    findItem.createTime = new Date().getTime()
     global.systemStorage.chainList.history.push(findItem);
 
     global.systemStorage.chainList.msgList[findIndex] = newItem
@@ -231,14 +233,12 @@ router.post('/msg/get', function (req, res){
 })
 
 router.post('/msg/list', function (req, res){
-    let mgList = global.systemStorage.chainList.msgList;
-    let history = global.systemStorage.chainList.history;
+    let chainList = _.cloneDeep(global.systemStorage.chainList);
+    let mgList = chainList.msgList.map(item => item);
     let list = mgList.sort((a, b) => {
         return  b.createTime - a.createTime;
     });
 
-    console.log("mgList", mgList)
-    console.log("history", history)
     list = list.map(item => {
         item.history = filterHistory(item.id);
         return item;
