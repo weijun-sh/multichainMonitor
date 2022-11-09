@@ -76,9 +76,9 @@ router.get("/view", async function (req, res) {
 })
 
 router.post("/msg/add", function (req, res) {
-    const {title, content,chainId, createTime} = req.body;
+    const {title, content,chainId, createTime, chainType} = req.body;
 
-    if(!title || !content || !chainId || !createTime){
+    if(!title || !content || !chainId || !createTime || !chainType){
         res.send({
             code: 1,
             msg: 'param error',
@@ -91,13 +91,14 @@ router.post("/msg/add", function (req, res) {
         global.systemStorage.chainList.msgList = []
     }
 
-    global.systemStorage.chainList.msgList.push({
+    global.systemStorage.chainList.msgList.unshift({
         title,
         content,
         id: guid(),
         chainId: chainId,
         deal: null,
-        createTime: createTime
+        createTime: createTime,
+        chainType: chainType
     });
 
     systemStorageSave(global.systemStorage)
@@ -149,7 +150,7 @@ router.post("/msg/update", function (req, res) {
     }
 
     findItem.createTime = new Date().getTime()
-    global.systemStorage.chainList.history.push(findItem);
+    global.systemStorage.chainList.history.unshift(findItem);
 
     global.systemStorage.chainList.msgList[findIndex] = newItem
 
@@ -235,11 +236,9 @@ router.post('/msg/get', function (req, res){
 router.post('/msg/list', function (req, res){
     let chainList = _.cloneDeep(global.systemStorage.chainList);
     let mgList = chainList.msgList.map(item => item);
-    let list = mgList.sort((a, b) => {
-        return  b.createTime - a.createTime;
-    });
 
-    list = list.map(item => {
+
+    mgList = mgList.map(item => {
         item.history = filterHistory(item.id);
         return item;
     })
@@ -248,7 +247,7 @@ router.post('/msg/list', function (req, res){
     res.send({
         code: 0,
         msg: 'success',
-        data: list
+        data: mgList
     })
 })
 
