@@ -76,9 +76,9 @@ router.get("/view", async function (req, res) {
 })
 
 router.post("/msg/add", function (req, res) {
-    const {title, content,chainId, createTime, chainType} = req.body;
+    const {title, content,chainId, createTime, /*chainType*/} = req.body;
 
-    if(!title || !content || !chainId || !createTime || !chainType){
+    if(!title || !content || !chainId || !createTime /*|| !chainType*/){
         res.send({
             code: 1,
             msg: 'param error',
@@ -98,7 +98,7 @@ router.post("/msg/add", function (req, res) {
         chainId: chainId,
         deal: null,
         createTime: createTime,
-        chainType: chainType
+        /*chainType: chainType*/
     });
 
     systemStorageSave(global.systemStorage)
