@@ -34,9 +34,11 @@ app.all("*", function (req, res, next) {
 const monitorRouter = require('./routers/monitorRouter')
 const storageRouter = require('./routers/storageRouter')
 const chainRouter = require('./routers/chainListRouter')
+const chainListTestingRouter = require('./routers/chainListTesting')
 app.use('/chainlist',chainRouter.router)
 app.use('/storage', storageRouter.router)
 app.use('/monitor', monitorRouter.router)
+app.use('/chainlistTest', chainListTestingRouter.router)
 
 app.listen(MAINTENANCE_CONF.SERVER_PORT, function () {
     console.log("start ==>", new Date().toLocaleString())
