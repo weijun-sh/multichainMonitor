@@ -146,8 +146,13 @@ router.post('/nodeInfo', function (req, res) {
                         "rpc": "fullnode1",
                         "height": "16022435",
                         "latency": "0.048",
-                        "version": ""
-                    }, {"rpc": "ethmainnet-nginx", "height": "16022435", "latency": "0.102", "version": ""}]
+                        "version": "9.9.9"
+                    }, {
+                        "rpc": "ethmainnet-nginx",
+                        "height": "16022435",
+                        "latency": "0.102",
+                        "version": "1.1.1"
+                    }]
                 },
                 "id": 1
             }
