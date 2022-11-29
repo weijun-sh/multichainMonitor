@@ -12,6 +12,15 @@ const INIT_DATA = {
     chainList: {
         msgList: [],
         history: [],
+    },
+    user: {
+        machine: {
+            13026610069: {
+                password: '13026610069',
+                role: 'admin'
+            },
+
+        }
     }
 }
 
